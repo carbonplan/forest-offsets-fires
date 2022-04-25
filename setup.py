@@ -16,18 +16,18 @@ PYTHON_REQUIRES = '>=3.7'
 description = 'carbonplan python project template'
 
 setup(
-    name='carbonplan-project',
+    name='carbonplan-forest-offsets-fires',
     description=description,
     long_description=LONG_DESCRIPTION,
     long_description_content_type='text/markdown',
-    maintainer='Raphael Hagen',
-    maintainer_email='raphael@carbonplan.org',
-    url='https://github.com/carbonplan/python-project-template',
+    maintainer='Grayson Badgley ',
+    maintainer_email='grayson@carbonplan.org',
+    url='https://github.com/carbonplan/forest-offsets-fires',
     packages=find_packages(),
     include_package_data=True,
     python_requires=PYTHON_REQUIRES,
     install_requires=INSTALL_REQUIRES,
     license='MIT',
-    keywords='carbon, data, climate',
+    keywords='carbon, data, climate, forests, fire',
     use_scm_version={'version_scheme': 'post-release', 'local_scheme': 'dirty-tag'},
 )
