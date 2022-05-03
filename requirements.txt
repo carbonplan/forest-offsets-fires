@@ -1,6 +1,6 @@
 carbonplan
 carbonplan[styles]
 carbonplan[data]
-zarr
-intake
-intake-xarray
+carbonplan-forest-offsets
+tippecanoe
+mbutil
