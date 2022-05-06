@@ -1,3 +1,6 @@
+import json
+
+import fsspec
 import geopandas
 import prefect
 from fuzzywuzzy import process
@@ -85,20 +88,23 @@ def append_inciweb_urls(project_fires):
 
     inciweb_uris = utils.get_inciweb_uris()
 
-    d = {}
+    annotated_fires = {}
     for k, v in project_fires['fires'].items():
         match = process.extractOne(v['name'], inciweb_uris.keys(), score_cutoff=90)
         inciweb_link = None
         if match is not None:
             inciweb_link = 'https://inciweb.nwcg.gov' + inciweb_uris[match[0]]
         v['url'] = inciweb_link
-        d[k] = v
-    return d
+        annotated_fires[k] = v
+    project_fires['fires'] = annotated_fires
+    return project_fires
 
 
 @prefect.task
-def write_state():
-    pass
+def write_state_as_of(as_of: DateTimeParameter, annotated_projects: list):
+    as_of_str = as_of.strftime('%Y-%m-%d')
+    with fsspec.open(f'gs://{NIFC_BUCKET}/fires/project_fires/state_{as_of_str}.json', 'w') as f:
+        json.dump(annotated_projects, f)
 
 
 filter_project_results = FilterTask(filter_func=lambda x: x is not None)
@@ -116,4 +122,4 @@ with Flow('project-stats') as flow:
     )
     filtered_projects = filter_project_results(project_fires)
     appended = append_inciweb_urls.map(filtered_projects)
-    write_state()
+    write_state_as_of(as_of, appended)
