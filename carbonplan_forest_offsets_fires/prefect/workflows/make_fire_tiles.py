@@ -4,7 +4,7 @@ from prefect.tasks.shell import ShellTask
 
 from carbonplan_forest_offsets_fires.prefect.tasks import nifc
 
-UPLOAD_TO = 'carbonplan-forest-offsets/fires/tiles'
+UPLOAD_TO = 'carbonplan-forest-offsets/web/tiles'
 
 build_tiles_from_json = ShellTask(name='transform json to mbtiles')
 build_pbf_from_tiles = ShellTask(name='transform mbtiles to pbf')

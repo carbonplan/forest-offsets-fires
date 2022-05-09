@@ -4,7 +4,7 @@ from prefect.tasks.shell import ShellTask
 
 from carbonplan_forest_offsets_fires.prefect.tasks import geometry, nifc
 
-UPLOAD_TO = 'carbonplan-forest-offsets/fires/tiles'
+UPLOAD_TO = 'carbonplan-forest-offsets/web/tiles'
 
 build_tiles_from_json = ShellTask(name='transform json to mbtiles')
 build_pbf_from_tiles = ShellTask(name='transform mbtiles to pbf')
@@ -20,7 +20,7 @@ with prefect.Flow('make-project-tiles') as flow:
     stem = prefect.Parameter('stem', default='projects')
     tempdir = nifc.make_tile_tempdir()
 
-    projects = geometry.load_project_geometries()
+    projects = geometry.load_all_project_geometries()
     projects_json = get_project_json(projects)
 
     json_fn = nifc.write_fire_json(projects_json, tempdir)
