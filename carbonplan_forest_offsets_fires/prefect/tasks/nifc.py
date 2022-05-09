@@ -22,13 +22,17 @@ def get_nifc_filename(bucket: str, as_of: datetime = None) -> str:
             fns = sorted(fs(account_name='carbonplan').glob(f'{bucket}/*'))
         return ''.join(['gcs://', fns[-1]])
     except IndexError:
-        err_msg = f'No NIFC perimeters in {bucket}'
+        err_msg = f'No NIFC perimeters in {bucket} for {datetime.strftime("%Y-%m-%d")}'
         raise IndexError(err_msg)
 
 
 def load_nifc_data(nifc_filename: str) -> geopandas.GeoDataFrame:
     with fsspec.open(nifc_filename) as f:
-        return geopandas.read_parquet(f)
+        gdf = geopandas.read_parquet(f)
+    gdf = gdf.rename(
+        columns={'irwin_FireDiscoveryDateTime': 'state_date', 'poly_IncidentName': 'name'}
+    )
+    return gdf
 
 
 @prefect.task
@@ -36,6 +40,12 @@ def load_nifc_asof(as_of: datetime = None) -> geopandas.GeoDataFrame:
     fn = get_nifc_filename(NIFC_BUCKET, as_of)
     perims = load_nifc_data(fn)
     return perims
+
+
+@prefect.task
+def get_nifc_unary_union(gdf: geopandas.GeoDataFrame):
+    """apply unary untion to gdf"""
+    return gdf.unary_union.buffer(0)
 
 
 @prefect.task
