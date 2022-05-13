@@ -1,5 +1,9 @@
+from pathlib import Path
+
 import geopandas
+import pandas as pd
 import prefect
+from prefect.executors import LocalDaskExecutor
 from prefect.tasks.shell import ShellTask
 
 from carbonplan_forest_offsets_fires.prefect.tasks import geometry, nifc
@@ -11,24 +15,37 @@ build_pbf_from_tiles = ShellTask(name='transform mbtiles to pbf')
 
 
 @prefect.task
-def get_project_json(gdf: geopandas.GeoDataFrame) -> dict:
+def write_project_json(gdf: geopandas.GeoDataFrame, tempdir: str) -> dict:
     """Transform projects to json for tippecanoe"""
-    return gdf[['opr_id', 'geometry']].to_crs('epsg:4326').to_json()
+    d = gdf[['opr_id', 'geometry']].to_crs('epsg:4326').to_json()
+    out_fn = Path(tempdir) / 'projects.json'
+    with open(out_fn, 'w') as f:
+        f.write(d)
+    return out_fn
+
+
+@prefect.task
+def combine_geometries(mapped_geoms):
+    return pd.concat(mapped_geoms)
 
 
 with prefect.Flow('make-project-tiles') as flow:
-    stem = prefect.Parameter('stem', default='projects')
+    # stem = prefect.Parameter('stem', default='projects')
     tempdir = nifc.make_tile_tempdir()
 
-    projects = geometry.load_all_project_geometries()
-    projects_json = get_project_json(projects)
+    opr_ids = geometry.get_all_opr_ids()
+    geoms = geometry.load_simplified_geometry.map(opr_ids)
+    buffered_geoms = geometry.buffer_geometry.map(geoms, prefect.unmapped(250))
+    combo = combine_geometries(buffered_geoms)
+    json_fn = write_project_json(combo, tempdir)
 
-    json_fn = nifc.write_fire_json(projects_json, tempdir)
-    tippecanoe_cmd = nifc.build_tippecanoe_cmd(json_fn, tempdir, stem)
+    tippecanoe_cmd = nifc.build_tippecanoe_cmd(json_fn, tempdir, 'projects')
     tiles = build_tiles_from_json(command=tippecanoe_cmd)
 
     # must specify upstream, otherwise race condition
-    pbf_cmd = nifc.build_pbf_cmd(tempdir, stem, upstream_tasks=[tiles])
+    pbf_cmd = nifc.build_pbf_cmd(tempdir, 'projects', upstream_tasks=[tiles])
 
     pbf = build_pbf_from_tiles(command=pbf_cmd)
-    nifc.upload_tiles(tempdir, stem, UPLOAD_TO, upstream_tasks=[pbf])
+    nifc.upload_tiles(tempdir, 'projects', UPLOAD_TO, upstream_tasks=[pbf])
+
+flow.executor = LocalDaskExecutor(scheduler='processes', num_workers=2)

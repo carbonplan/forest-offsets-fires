@@ -55,7 +55,7 @@ def get_fires_json(nifc_data: geopandas.GeoDataFrame) -> str:
 
 @prefect.task
 def write_fire_json(data: str, tempdir: str) -> str:
-    out_fn = Path(tempdir) / 'fire.json'
+    out_fn = Path(tempdir) / 'fires.json'
     with open(out_fn, 'w') as f:
         f.write(data)
     return out_fn
@@ -93,7 +93,6 @@ def build_pbf_cmd(tempdir: str, stem: str) -> str:
 @prefect.task
 def upload_tiles(tempdir: str, stem: str, dst_bucket: str):
     fs = fsspec.get_filesystem_class('gcs')()
-    lpath = f'{tempdir}/processed/{stem}/'
-    print(lpath)
-    rpath = f'{dst_bucket}/{stem}'
+    lpath = f'{tempdir}/processed/{stem}'
+    rpath = f'{dst_bucket}/{stem}/'
     fs.put(lpath, rpath, recursive=True)

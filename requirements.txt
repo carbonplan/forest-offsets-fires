@@ -2,5 +2,3 @@ carbonplan
 carbonplan[styles]
 carbonplan[data]
 carbonplan-forest-offsets
-tippecanoe
-mbutil
