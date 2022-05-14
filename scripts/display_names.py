@@ -4,8 +4,10 @@ import pathlib
 import fsspec
 import tqdm
 from carbonplan_forest_offsets.load.issuance import load_issuance_table
+from carbonplan_forest_offsets.utils import get_centroids
 
 from carbonplan_forest_offsets_fires import utils
+from carbonplan_forest_offsets_fires.prefect.tasks.geometry import load_simplified_geometry
 
 
 def get_issuance_to_date():
@@ -49,15 +51,20 @@ def main():
     arbocs_to_date = get_issuance_to_date()
 
     for arb_id in tqdm.tqdm(display_names.keys()):
+
         record = {}
 
         opr_id = arbid_to_oprid[arb_id]
+        print(f'processing {opr_id}')
 
-        record['opr_id'] = opr_id
-        record['arb_id'] = arb_id
+        gdf = load_simplified_geometry.run(opr_id)
+        centroids = get_centroids(gdf)
+
+        record['id'] = opr_id
         record['name'] = display_names[arb_id]
         record['arbocs'] = arbocs_to_date[arb_id]
         record['area'] = get_project_area(opr_id)
+        record['shape_centroid'] = centroids[0]
         store.append(record)
 
     with fsspec.open('gs://carbonplan-forest-offsets/web/display-data.json', 'w') as f:

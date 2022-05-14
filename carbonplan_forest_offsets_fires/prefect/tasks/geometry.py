@@ -22,10 +22,10 @@ def load_simplified_geometry(opr_id: str) -> geopandas.GeoDataFrame:
         d = json.load(f)
 
     # mapshaper uses `-` to denote stdin/stdout, so read from - and write to -
-    # this shapefile is so broken we have to really goose the simplification
-    if opr_id == 'ACR361':
+    # ACR361 shapefile is so broken we have to really goose the simplification
+    if opr_id in ['ACR361']:
         result = subprocess.run(
-            'mapshaper -i - -simplify 10% -o -',
+            'mapshaper -i - -simplify 5% -o -',
             text=True,
             capture_output=True,
             shell=True,
@@ -33,7 +33,7 @@ def load_simplified_geometry(opr_id: str) -> geopandas.GeoDataFrame:
         )
     else:
         result = subprocess.run(
-            'mapshaper -i - -simplify 70% -o -',
+            'mapshaper -i - -simplify 80% -o -',
             text=True,
             capture_output=True,
             shell=True,
@@ -47,6 +47,8 @@ def load_simplified_geometry(opr_id: str) -> geopandas.GeoDataFrame:
 
 @prefect.task
 def buffer_geometry(gdf: geopandas.GeoDataFrame, buffer_by: int):
+    gdf.geometry = gdf.buffer(0)  # explode/dissolve requires valid geometries
+    gdf = gdf.explode(index_parts=True).dissolve()
     gdf.geometry = gdf.buffer(buffer_by).buffer(-1 * buffer_by)
     return gdf
 
