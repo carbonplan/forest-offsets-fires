@@ -5,13 +5,15 @@ import fsspec
 import geopandas
 import prefect
 
-from carbonplan_forest_offsets_fires.utils import list_all_opr_ids
+from carbonplan_forest_offsets_fires.utils import list_all_ea_opr_ids, list_all_opr_ids
 
 
 @prefect.task
 def get_all_opr_ids():
     """Wrap util in prefect task for use in flow"""
-    return list_all_opr_ids()
+    opr_ids = list_all_opr_ids()
+    ea_opr_ids = list_all_ea_opr_ids()
+    return [opr_id for opr_id in opr_ids if opr_id not in ea_opr_ids]
 
 
 @prefect.task
@@ -49,7 +51,7 @@ def load_simplified_geometry(opr_id: str) -> geopandas.GeoDataFrame:
 def buffer_geometry(gdf: geopandas.GeoDataFrame, buffer_by: int):
     gdf.geometry = gdf.buffer(0)  # explode/dissolve requires valid geometries
     gdf = gdf.explode(index_parts=True).dissolve()
-    gdf.geometry = gdf.buffer(buffer_by).buffer(-1 * buffer_by)
+    gdf.geometry = gdf.simplify(50).buffer(buffer_by).buffer(-1 * buffer_by)
     return gdf
 
 
