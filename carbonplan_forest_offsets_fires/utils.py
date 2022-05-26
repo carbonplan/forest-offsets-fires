@@ -4,6 +4,7 @@ from pathlib import Path
 import fsspec
 import geopandas
 import numpy as np
+import pandas as pd
 from bs4 import BeautifulSoup
 
 
@@ -18,6 +19,16 @@ def list_all_opr_ids(bucket: str = 'carbonplan-forest-offsets/carb-geometries/ra
     fnames = fs.glob(f'{bucket}/*json')
     opr_ids = [Path(fname).stem for fname in fnames]
     return opr_ids
+
+
+def list_all_ea_opr_ids() -> list:
+    """Create list of all EA projects from CARB source"""
+    data = pd.read_html(
+        'https://ww2.arb.ca.gov/our-work/programs/compliance-offset-program/'
+        'early-action-offset-credits/early-action-projects'
+    )[0]
+
+    return np.unique(data.T.values[4]).tolist()
 
 
 def extract_northern_corner(polygon):
