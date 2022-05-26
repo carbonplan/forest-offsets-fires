@@ -15,14 +15,14 @@ def get_nifc_filename(bucket: str, as_of: datetime = None) -> str:
     try:
         fs = get_filesystem_class('gcs')
         if as_of:
-            fns = sorted(
-                fs(account_name='carbonplan').glob(f"{bucket}/{as_of.strftime('%Y-%m-%d')}*")
-            )
+            fns = fs(account_name='carbonplan').glob(f"{bucket}/{as_of.strftime('%Y-%m-%d')}*")
         else:
-            fns = sorted(fs(account_name='carbonplan').glob(f'{bucket}/*'))
-        return ''.join(['gcs://', fns[-1]])
+            fns = fs(account_name='carbonplan').glob(f'{bucket}/*')
+        sorted_fns = sorted(fns)
+
+        return ''.join(['gcs://', sorted_fns[-1]])
     except IndexError:
-        err_msg = f'No NIFC perimeters in {bucket} for {datetime.strftime("%Y-%m-%d")}'
+        err_msg = f'No NIFC perimeters in {bucket} for that date'
         raise IndexError(err_msg)
 
 
@@ -30,7 +30,7 @@ def load_nifc_data(nifc_filename: str) -> geopandas.GeoDataFrame:
     with fsspec.open(nifc_filename) as f:
         gdf = geopandas.read_parquet(f)
     gdf = gdf.rename(
-        columns={'irwin_FireDiscoveryDateTime': 'state_date', 'poly_IncidentName': 'name'}
+        columns={'irwin_FireDiscoveryDateTime': 'start_date', 'poly_IncidentName': 'name'}
     )
     return gdf
 
@@ -39,6 +39,7 @@ def load_nifc_data(nifc_filename: str) -> geopandas.GeoDataFrame:
 def load_nifc_asof(as_of: datetime = None) -> geopandas.GeoDataFrame:
     fn = get_nifc_filename(NIFC_BUCKET, as_of)
     perims = load_nifc_data(fn)
+    perims = perims.to_crs('epsg:5070')
     return perims
 
 
@@ -93,6 +94,6 @@ def build_pbf_cmd(tempdir: str, stem: str) -> str:
 @prefect.task
 def upload_tiles(tempdir: str, stem: str, dst_bucket: str):
     fs = fsspec.get_filesystem_class('gcs')()
-    lpath = f'{tempdir}/processed/{stem}'
-    rpath = f'{dst_bucket}/{stem}/'
+    lpath = f'{tempdir}/processed/{stem}/'
+    rpath = f'{dst_bucket}/{stem}'
     fs.put(lpath, rpath, recursive=True)

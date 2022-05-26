@@ -101,8 +101,11 @@ def append_inciweb_urls(project_fires):
 
 
 @prefect.task
-def write_state_as_of(as_of: DateTimeParameter, annotated_projects: list):
-    as_of_str = as_of.strftime('%Y-%m-%d')
+def write_state_as_of(as_of, annotated_projects: list):
+    if not as_of:
+        as_of_str = 'now'
+    else:
+        as_of_str = as_of.strftime('%Y-%m-%d')
     with fsspec.open(f'gs://{NIFC_BUCKET}/fires/project_fires/state_{as_of_str}.json', 'w') as f:
         json.dump(annotated_projects, f)
 
@@ -110,7 +113,7 @@ def write_state_as_of(as_of: DateTimeParameter, annotated_projects: list):
 filter_project_results = FilterTask(filter_func=lambda x: x is not None)
 
 with Flow('project-stats') as flow:
-    as_of = DateTimeParameter(name='as_of')
+    as_of = DateTimeParameter(name='as_of', required=False)
     nifc_perimeters = nifc.load_nifc_asof(as_of)
 
     all_proj_geoms = geometry.load_all_project_geometries()
