@@ -6,7 +6,7 @@ import geopandas
 import pandas as pd
 import prefect
 import requests
-from prefect.storage import Azure
+from prefect.storage import GCS
 
 CRS = '+proj=aea +lat_0=23 +lon_0=-96 +lat_1=29.5 +lat_2=45.5 +x_0=0 +y_0=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs'  # noqa
 UPLOAD_TO = 'gs://carbonplan-forest-offsets/fires/nifc-data'
@@ -68,7 +68,7 @@ def save_nifc_perimeters(perimeters):
         perimeters.to_parquet(f, compression='gzip')
 
 
-with prefect.Flow('get-nifc-perimeters', schedule=schedule) as flow:
+with prefect.Flow('get-nifc-perimeters') as flow:
     record_count = get_nifc_perimeter_count()
     urls = get_paginated_fire_urls(record_count)
     perimeters = get_nifc_perimeters(urls)
@@ -80,7 +80,7 @@ env = {
 }
 
 
-flow.storage = Azure(container='prefect')
+flow.storage = GCS(container='carbonplan-prefect')
 flow.run_config = prefect.run_configs.KubernetesRun(
     labels=['gcp-us-central1-b'], image='carbonplan/fire-monitor-prefect:2022.06.06', env=env
 )
