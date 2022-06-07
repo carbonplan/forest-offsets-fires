@@ -22,7 +22,7 @@ def get_fire_url(url):
 def get_nifc_perimeter_count():
     """Return count of perimeters in nifc dataset to enable pagination
     Previously, we used a static download provided by NIFC, which could go stale.
-    Now, we're hitting the underlying database (per NIFC suggestion)
+    Now, we"re hitting the underlying database (per NIFC suggestion)
     """
     params = {'where': 'OBJECTID >0', 'returnCountOnly': 'true', 'f': 'pjson'}
 
@@ -34,7 +34,7 @@ def get_nifc_perimeter_count():
 @prefect.task
 def get_paginated_fire_urls(record_count, request_size=1_000):
     """Generate urls for grabbing all NIFC data.
-    Geopandas doesnt support requests-style params, so it's easier to just premake the urls
+    Geopandas doesnt support requests-style params, so it"s easier to just premake the urls
     """
     record_offsets = range(1, record_count, request_size)
 
@@ -74,5 +74,5 @@ with prefect.Flow('get-nifc-perimeters', schedule=schedule) as flow:
     save_nifc_perimeters(perimeters)
 
 flow.run_config = prefect.run_configs.KubernetesRun(
-    image='carbonplan/fire-monitor-prefect:2022.06.06'
+    labels=['az-eu-west'], image='carbonplan/fire-monitor-prefect:2022.06.06'
 )
