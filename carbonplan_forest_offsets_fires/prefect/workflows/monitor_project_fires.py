@@ -1,4 +1,5 @@
 import csv
+import datetime
 from typing import Union
 
 import geopandas
@@ -7,6 +8,8 @@ import requests
 from prefect.tasks.notifications import SlackTask
 
 from carbonplan_forest_offsets_fires.prefect.tasks import geometry
+
+schedule = prefect.schedules.IntervalSchedule(interval=datetime.timedelta(hours=8))
 
 
 @prefect.task
@@ -77,7 +80,7 @@ send_slack_alert = SlackTask()
 
 with prefect.Flow('monitor-project-fires') as flow:
     active_fires = get_active_fires()
-    project_geoms = geometry.load_project_geometries()
+    project_geoms = geometry.load_all_project_geometries()
     fire_counts = get_active_fires_by_project(project_geoms, active_fires)
     send_messages = check_send_messages(fire_counts)
     with prefect.case(send_messages, True):
