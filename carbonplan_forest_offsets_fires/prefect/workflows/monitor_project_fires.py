@@ -78,7 +78,7 @@ def check_send_messages(fire_counts: Union[None, dict]) -> bool:
 
 send_slack_alert = SlackTask()
 
-with prefect.Flow('monitor-project-fires') as flow:
+with prefect.Flow('monitor-project-fires', schedule=schedule) as flow:
     active_fires = get_active_fires()
     project_geoms = geometry.load_all_project_geometries()
     fire_counts = get_active_fires_by_project(project_geoms, active_fires)

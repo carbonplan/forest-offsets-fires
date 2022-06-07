@@ -8,8 +8,9 @@ import prefect
 import requests
 
 CRS = '+proj=aea +lat_0=23 +lon_0=-96 +lat_1=29.5 +lat_2=45.5 +x_0=0 +y_0=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs'  # noqa
-BUCKET = 'carbonplan-scratch'
 UPLOAD_TO = 'gs://carbonplan-forest-offsets/fires/nifc-data'
+
+schedule = prefect.schedules.IntervalSchedule(interval=datetime.timedelta(hours=3))
 
 
 def get_fire_url(url):
@@ -66,7 +67,7 @@ def save_nifc_perimeters(perimeters):
         perimeters.to_parquet(f, compression='gzip')
 
 
-with prefect.Flow('get-nifc-perimeters') as flow:
+with prefect.Flow('get-nifc-perimeters', schedule=schedule) as flow:
     record_count = get_nifc_perimeter_count()
     urls = get_paginated_fire_urls(record_count)
     perimeters = get_nifc_perimeters(urls)
