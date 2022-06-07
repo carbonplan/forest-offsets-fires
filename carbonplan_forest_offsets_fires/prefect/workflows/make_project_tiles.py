@@ -35,7 +35,7 @@ with prefect.Flow('make-project-tiles') as flow:
 
     opr_ids = geometry.get_all_opr_ids()
     geoms = geometry.load_simplified_geometry.map(opr_ids)
-    buffered_geoms = geometry.buffer_geometry.map(geoms, prefect.unmapped(5))
+    buffered_geoms = geometry.buffer_geometry.map(geoms, prefect.unmapped(30))
     combo = combine_geometries(buffered_geoms)
     json_fn = write_project_json(combo, tempdir)
 
@@ -49,3 +49,6 @@ with prefect.Flow('make-project-tiles') as flow:
     nifc.upload_tiles(tempdir, 'projects', UPLOAD_TO, upstream_tasks=[pbf])
 
 flow.executor = LocalDaskExecutor(scheduler='processes', num_workers=4)
+flow.run_config = prefect.run_configs.KubernetesRun(
+    image='carbonplan/fire-monitor-prefect:2022.06.06'
+)

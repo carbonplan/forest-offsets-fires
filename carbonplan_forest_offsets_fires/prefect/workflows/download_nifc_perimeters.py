@@ -71,3 +71,7 @@ with prefect.Flow('get-nifc-perimeters') as flow:
     urls = get_paginated_fire_urls(record_count)
     perimeters = get_nifc_perimeters(urls)
     save_nifc_perimeters(perimeters)
+
+flow.run_config = prefect.run_configs.KubernetesRun(
+    image='carbonplan/fire-monitor-prefect:2022.06.06'
+)

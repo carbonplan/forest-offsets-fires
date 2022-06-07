@@ -51,6 +51,7 @@ def get_nifc_unary_union(gdf: geopandas.GeoDataFrame):
 
 @prefect.task
 def get_fires_json(nifc_data: geopandas.GeoDataFrame) -> str:
+    """Create json that we pass to tippecanoe for tiling"""
     return nifc_data[['irwin_UniqueFireIdentifier', 'geometry']].to_crs('EPSG:4326').to_json()
 
 

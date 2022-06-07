@@ -1,3 +1,4 @@
+import prefect
 from prefect import Flow, Parameter
 from prefect.core.parameter import DateTimeParameter
 from prefect.tasks.shell import ShellTask
@@ -26,3 +27,7 @@ with Flow('make-fire-tiles') as flow:
 
     pbf = build_pbf_from_tiles(command=pbf_cmd)
     nifc.upload_tiles(tempdir, stem, UPLOAD_TO, upstream_tasks=[pbf])
+
+flow.run_config = prefect.run_configs.KubernetesRun(
+    image='carbonplan/fire-monitor-prefect:2022.06.06'
+)

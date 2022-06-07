@@ -83,3 +83,7 @@ with prefect.Flow('monitor-project-fires') as flow:
     with prefect.case(send_messages, True):
         messages = generate_slack_messages(fire_counts)
         send_slack_alert.map(messages)
+
+flow.run_config = prefect.run_configs.KubernetesRun(
+    image='carbonplan/fire-monitor-prefect:2022.06.06'
+)

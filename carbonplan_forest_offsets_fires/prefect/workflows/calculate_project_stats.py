@@ -1,3 +1,4 @@
+import datetime
 import json
 
 import fsspec
@@ -103,11 +104,21 @@ def append_inciweb_urls(project_fires):
 @prefect.task
 def write_state_as_of(as_of, annotated_projects: list):
     if not as_of:
-        as_of_str = 'now'
+        as_of_strs = ['now', datetime.datetime.utcnow().date().strftime('%Y-%m-%d')]
     else:
-        as_of_str = as_of.strftime('%Y-%m-%d')
-    with fsspec.open(f'gs://{NIFC_BUCKET}/fires/project_fires/state_{as_of_str}.json', 'w') as f:
-        json.dump(annotated_projects, f)
+        as_of_strs = [as_of.strftime('%Y-%m-%d')]
+
+    to_write = {
+        'name': 'project-fires',
+        'created_at': datetime.datetime.utcnow().date().strftime('%Y-%m-%d %H:%M:%S'),
+        'overlapping_fires': annotated_projects,
+    }
+    # write twice if regular monitoring. once to fixed `now` file and once to dt file
+    for as_of_str in as_of_strs:
+        with fsspec.open(
+            f'gs://{NIFC_BUCKET}/fires/project_fires/state_{as_of_str}.json', 'w'
+        ) as f:
+            json.dump(to_write, f)
 
 
 filter_project_results = FilterTask(filter_func=lambda x: x is not None)
@@ -126,3 +137,7 @@ with Flow('project-stats') as flow:
     filtered_projects = filter_project_results(project_fires)
     appended = append_inciweb_urls.map(filtered_projects)
     write_state_as_of(as_of, appended)
+
+flow.run_config = prefect.run_configs.KubernetesRun(
+    image='carbonplan/fire-monitor-prefect:2022.06.06'
+)
