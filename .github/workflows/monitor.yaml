@@ -1,0 +1,30 @@
+name: fires
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 */4 * * *' # every 4th hour
+  workflow_dispatch:
+
+jobs:
+  flows:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    container:
+      image: carbonplan/fire-monitor-prefect:2022.06.06
+      options: --user root
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install
+        run: |
+          python -m pip install --no-deps .
+          python -m pip list
+      - name: run-flows
+        run: |
+          prefect run -p ./carbonplan_forest_offsets_fires/prefect/workflows/download_nifc_perimeters.py
+          prefect run -p ./carbonplan_forest_offsets_fires/prefect/workflows/monitor_project_fires.py
+          prefect run -p ./carbonplan_forest_offsets_fires/prefect/workflows/make_fire_tiles.py
+          prefect run -p ./carbonplan_forest_offsets_fires/prefect/workflows/calculate_project_stats.py
+          prefect run -p ./carbonplan_forest_offsets_fires/prefect/workflows/make_project_tiles.py
