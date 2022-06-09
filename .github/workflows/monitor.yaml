@@ -29,6 +29,7 @@ jobs:
       - name: install
         run: |
           git config --global --add safe.directory /__w/forest-offsets-fires/forest-offsets-fires
+          python -m pip install pyarrow
           python -m pip install --no-deps .
           python -m pip list
 
