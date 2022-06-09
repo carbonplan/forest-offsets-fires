@@ -16,6 +16,11 @@ jobs:
       image: carbonplan/fire-monitor-prefect:2022.06.06
       options: --user root
     steps:
+      - id: 'auth'
+        uses: 'google-github-actions/setup-gcloud@V0'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
       - uses: actions/checkout@v3
       - name: Install
         run: |
@@ -24,7 +29,5 @@ jobs:
       - name: run-flows
         run: |
           prefect run -p ./carbonplan_forest_offsets_fires/prefect/workflows/download_nifc_perimeters.py
-          prefect run -p ./carbonplan_forest_offsets_fires/prefect/workflows/monitor_project_fires.py
           prefect run -p ./carbonplan_forest_offsets_fires/prefect/workflows/make_fire_tiles.py
           prefect run -p ./carbonplan_forest_offsets_fires/prefect/workflows/calculate_project_stats.py
-          prefect run -p ./carbonplan_forest_offsets_fires/prefect/workflows/make_project_tiles.py
