@@ -1,4 +1,4 @@
 carbonplan
-carbonplan[styles]
-carbonplan[data]
 carbonplan-forest-offsets
+pyarrow
+fuzzywuzzy
