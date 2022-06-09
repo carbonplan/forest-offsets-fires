@@ -17,7 +17,7 @@ jobs:
       options: --user root
     steps:
       - id: 'auth'
-        uses: 'google-github-actions/setup-gcloud@V0'
+        uses: 'google-github-actions/setup-gcloud@v0'
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
