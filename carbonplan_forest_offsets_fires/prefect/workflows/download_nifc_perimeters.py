@@ -76,7 +76,7 @@ with prefect.Flow('get-nifc-perimeters') as flow:
 
 
 env = {
-    'EXTRA_PIP_PACKAGES': 'git+https://github.com/carbonplan/forest-offsets-fires@main --no-deps'
+    'EXTRA_PIP_PACKAGES': 'pyarrow git+https://github.com/carbonplan/forest-offsets-fires@main --no-deps'  # noqa
 }
 
 
