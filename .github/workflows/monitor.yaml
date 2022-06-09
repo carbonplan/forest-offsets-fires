@@ -17,9 +17,12 @@ jobs:
       options: --user root
     steps:
       - id: 'auth'
-        uses: 'google-github-actions/setup-gcloud@v0'
+        uses: 'google-github-actions/auth@v0'
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v0'
 
       - uses: actions/checkout@v3
       - name: Install
