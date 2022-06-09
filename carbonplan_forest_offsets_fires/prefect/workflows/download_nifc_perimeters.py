@@ -80,7 +80,7 @@ env = {
 }
 
 
-flow.storage = GCS(container='carbonplan-prefect')
+flow.storage = GCS(bucket='carbonplan-prefect')
 flow.run_config = prefect.run_configs.KubernetesRun(
     labels=['gcp-us-central1-b'], image='carbonplan/fire-monitor-prefect:2022.06.06', env=env
 )
