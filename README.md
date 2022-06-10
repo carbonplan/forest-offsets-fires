@@ -13,7 +13,7 @@ Monitoring tool for tracking wildfires burning within forest carbon offsets proj
 [mit license]: https://badgen.net/badge/license/MIT/blue
 
 This carbonplan repository contains the code that generates the data behind https://carbonplan.org/research/forest-offsets-fires.
-Raw data come from the [California Air Resources Board forest offsets map](https://webmaps.arb.ca.gov/ARBOCIssuanceMap/) and the National Interagency Fire Center's [current wildland fire perimeter dataset].
+Raw data come from the [California Air Resources Board forest offsets map](https://webmaps.arb.ca.gov/ARBOCIssuanceMap/) and the National Interagency Fire Center's [current wildland fire perimeter dataset](https://data-nifc.opendata.arcgis.com/datasets/nifc::wfigs-current-wildland-fire-perimeters/about).
 
 ## license
 
