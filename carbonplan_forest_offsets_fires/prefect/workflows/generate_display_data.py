@@ -97,7 +97,8 @@ def load_arbid_map():
 
 @prefect.task
 def load_display_names():
-    data_path = pathlib.Path(__file__).parents[1]
+    """Load json with hand curated, shortened project names"""
+    data_path = pathlib.Path(__file__).parents[2]
     with fsspec.open(data_path / 'data' / 'display-names.json') as f:
         display_names = json.load(f)
     return {x['arb_id']: x['name'] for x in display_names}
@@ -142,6 +143,7 @@ def construct_record(
     opr_id: str, display_name: str, arbocs: int, area: int, centroid: list, location: str
 ) -> dict:
     return {
+        'id': opr_id,
         'opr_id': opr_id,
         'name': display_name,
         'arbocs': arbocs,
@@ -154,7 +156,9 @@ def construct_record(
 @prefect.task
 def write_results(records: list):
     with fsspec.open('gs://carbonplan-forest-offsets/web/display-data.json', 'w') as f:
-        json.dump(records, f)
+        ea_opr_ids = utils.list_all_ea_opr_ids()
+        to_write = [record for record in records if record['opr_id'] not in ea_opr_ids]
+        json.dump(to_write, f)
 
 
 with prefect.Flow('generate-display-data') as flow:
