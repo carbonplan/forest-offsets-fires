@@ -31,6 +31,7 @@ def get_active_fires() -> geopandas.GeoDataFrame:
 
     geoms = geopandas.points_from_xy(lons, lats, crs='epsg:4326')
     gdf = geopandas.GeoDataFrame(geometry=geoms)
+    gdf = gdf.to_crs('epsg:5070')
     return gdf
 
 
