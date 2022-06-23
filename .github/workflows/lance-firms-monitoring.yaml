@@ -11,6 +11,8 @@ on:
 jobs:
   flows:
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
     timeout-minutes: 5
     container:
       image: carbonplan/fire-monitor-prefect:2022.06.06
