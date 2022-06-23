@@ -1,5 +1,6 @@
 import csv
 import datetime
+import os
 from typing import Union
 
 import geopandas
@@ -77,7 +78,14 @@ def check_send_messages(fire_counts: Union[None, dict]) -> bool:
         return False
 
 
-send_slack_alert = SlackTask()
+#send_slack_alert = SlackTask(webhook_s)
+@prefect.task
+def send_slack_alert(message):
+    """Temporary task until we get Prefect Cloud online"""
+    r = requests.post(
+        os.environ['SLACK_WEBHOOK_URL'], json={'text': message}
+    )
+    r.raise_for_status()
 
 with prefect.Flow('monitor-project-fires', schedule=schedule) as flow:
     active_fires = get_active_fires()
