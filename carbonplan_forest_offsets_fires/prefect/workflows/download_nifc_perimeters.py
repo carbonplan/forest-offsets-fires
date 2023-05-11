@@ -13,6 +13,8 @@ UPLOAD_TO = 'gs://carbonplan-forest-offsets/fires/nifc-data'
 
 schedule = prefect.schedules.IntervalSchedule(interval=datetime.timedelta(hours=3))
 
+NIFC_ENDPOINT = 'https://services3.arcgis.com/T4QMspbfLg3qTGWY/ArcGIS/rest/services/' \
+            'WFIGS_Interagency_Perimeters_YearToDate/FeatureServer/0/query'
 
 def get_fire_url(url):
     fires = geopandas.read_file(url).to_crs(CRS).reset_index(drop=True)
@@ -26,9 +28,7 @@ def get_nifc_perimeter_count():
     Now, we"re hitting the underlying database (per NIFC suggestion)
     """
     params = {'where': 'OBJECTID >0', 'returnCountOnly': 'true', 'f': 'pjson'}
-
-    url = 'https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/CY_WildlandFire_Perimeters_ToDate/FeatureServer/0/query'  # noqa
-    r = requests.get(url, params=params)
+    r = requests.get(NIFC_ENDPOINT, params=params)
     return r.json()['count']
 
 
@@ -47,7 +47,7 @@ def get_paginated_fire_urls(record_count, request_size=1_000):
         'outFields': '*',
     }
 
-    base_url = 'https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/CY_WildlandFire_Perimeters_ToDate/FeatureServer/0/query?'  # noqa
+    base_url = NIFC_ENDPOINT + '?' # not sure if can go through `params` but this allows to encode url directly
     urls = [
         base_url + urllib.parse.urlencode(base_params) + f'&resultOffset={record_offset}'
         for record_offset in record_offsets
