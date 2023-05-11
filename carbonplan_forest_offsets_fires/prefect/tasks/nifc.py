@@ -30,7 +30,7 @@ def load_nifc_data(nifc_filename: str) -> geopandas.GeoDataFrame:
     with fsspec.open(nifc_filename) as f:
         gdf = geopandas.read_parquet(f)
     gdf = gdf.rename(
-        columns={'irwin_FireDiscoveryDateTime': 'start_date', 'poly_IncidentName': 'name'}
+        columns={'attr_FireDiscoveryDateTime': 'start_date', 'poly_IncidentName': 'name'}
     )
     return gdf
 
@@ -52,7 +52,7 @@ def get_nifc_unary_union(gdf: geopandas.GeoDataFrame):
 @prefect.task
 def get_fires_json(nifc_data: geopandas.GeoDataFrame) -> str:
     """Create json that we pass to tippecanoe for tiling"""
-    return nifc_data[['irwin_UniqueFireIdentifier', 'geometry']].to_crs('EPSG:4326').to_json()
+    return nifc_data[['poly_IRWINID', 'geometry']].to_crs('EPSG:4326').to_json()
 
 
 @prefect.task
