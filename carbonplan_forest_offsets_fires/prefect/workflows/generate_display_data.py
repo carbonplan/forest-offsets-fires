@@ -155,7 +155,7 @@ def construct_record(
 
 @prefect.task
 def write_results(records: list):
-    with fsspec.open('gs://carbonplan-forest-offsets/web/display-data.json', 'w') as f:
+    with fsspec.open('s3://carbonplan-forest-offsets/web/display-data.json', 'w') as f:
         ea_opr_ids = utils.list_all_ea_opr_ids()
         to_write = [record for record in records if record['opr_id'] not in ea_opr_ids]
         json.dump(to_write, f)

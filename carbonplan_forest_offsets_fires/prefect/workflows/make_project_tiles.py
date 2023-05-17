@@ -30,7 +30,6 @@ def combine_geometries(mapped_geoms):
 
 
 with prefect.Flow('make-project-tiles') as flow:
-    # stem = prefect.Parameter('stem', default='projects')
     tempdir = nifc.make_tile_tempdir()
 
     opr_ids = geometry.get_all_opr_ids()

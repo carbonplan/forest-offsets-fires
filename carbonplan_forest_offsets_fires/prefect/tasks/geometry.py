@@ -7,6 +7,7 @@ import prefect
 
 from carbonplan_forest_offsets_fires.utils import list_all_ea_opr_ids, list_all_opr_ids
 
+GEOM_PATH = f's3://carbonplan-forest-offsets/carb-geometries'
 
 @prefect.task
 def get_all_opr_ids():
@@ -19,7 +20,7 @@ def get_all_opr_ids():
 @prefect.task
 def load_simplified_geometry(opr_id: str) -> geopandas.GeoDataFrame:
     """ "Pass raw geometry through mapshaper"""
-    fn = f'gs://carbonplan-forest-offsets/carb-geometries/raw/{opr_id}.json'
+    fn = GEOM_PATH + f'/raw/{opr_id}.json'
     with fsspec.open(fn) as f:
         d = json.load(f)
 
@@ -76,7 +77,7 @@ def load_all_project_geometries() -> geopandas.GeoDataFrame:
     Returns:
         geopandas.GeoDataFrame -- gepdataframe with all projects in epsg:5070
     """
-    fname = 'gs://carbonplan-forest-offsets/carb-geometries/all_carb_geoms.parquet'
+    fname = GEOM_PATH + '/all_carb_geoms.parquet'
     gdf = geopandas.read_parquet(fname)
     gdf = gdf.to_crs('epsg:5070')
     return gdf.reset_index()

@@ -15,9 +15,6 @@ from carbonplan_forest_offsets_fires.prefect.tasks import geometry, nifc
 NIFC_BUCKET = 'carbonplan-forest-offsets'
 
 serializer = prefect.engine.serializers.JSONSerializer()
-# result = prefect.engine.results.GCSResult(bucket=NIFC_BUCKET, serializer=serializer)
-result = prefect.engine.results.LocalResult('/tmp')
-
 
 def get_fire_metadata(project_fires: geopandas.GeoDataFrame) -> dict:
     centroids = (

@@ -9,7 +9,7 @@ import requests
 from prefect.storage import GCS
 
 CRS = '+proj=aea +lat_0=23 +lon_0=-96 +lat_1=29.5 +lat_2=45.5 +x_0=0 +y_0=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs'  # noqa
-UPLOAD_TO = 'gs://carbonplan-forest-offsets/fires/nifc-data'
+UPLOAD_TO = 's3://carbonplan-forest-offsets/fires/nifc-data'
 
 schedule = prefect.schedules.IntervalSchedule(interval=datetime.timedelta(hours=3))
 

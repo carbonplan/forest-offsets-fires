@@ -13,14 +13,14 @@ NIFC_BUCKET = 'carbonplan-forest-offsets/fires/nifc-data'
 
 def get_nifc_filename(bucket: str, as_of: datetime = None) -> str:
     try:
-        fs = get_filesystem_class('gcs')
+        fs = get_filesystem_class('s3')
         if as_of:
             fns = fs(account_name='carbonplan').glob(f"{bucket}/{as_of.strftime('%Y-%m-%d')}*")
         else:
             fns = fs(account_name='carbonplan').glob(f'{bucket}/*')
         sorted_fns = sorted(fns)
 
-        return ''.join(['gcs://', sorted_fns[-1]])
+        return ''.join(['s3://', sorted_fns[-1]])
     except IndexError:
         err_msg = f'No NIFC perimeters in {bucket} for that date'
         raise IndexError(err_msg)
@@ -94,7 +94,7 @@ def build_pbf_cmd(tempdir: str, stem: str) -> str:
 
 @prefect.task
 def upload_tiles(tempdir: str, stem: str, dst_bucket: str):
-    fs = fsspec.get_filesystem_class('gcs')()
+    fs = fsspec.get_filesystem_class('s3')()
     lpath = f'{tempdir}/processed/{stem}/'
     rpath = f'{dst_bucket}/{stem}'
     fs.put(lpath, rpath, recursive=True)

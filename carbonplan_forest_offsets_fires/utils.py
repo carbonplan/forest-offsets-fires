@@ -7,16 +7,17 @@ import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
 
+GEOM_PATH = "s3://carbonplan-forest-offsets/carb-geometries/raw"
 
-def list_all_opr_ids(bucket: str = 'carbonplan-forest-offsets/carb-geometries/raw') -> list:
+def list_all_opr_ids() -> list:
     """Return list of all opr ids
     Inputs:
         bucket {str} -- gcs location of geometries
     Returns:
         list -- all OPR ids as string
     """
-    fs = fsspec.filesystem('gs')
-    fnames = fs.glob(f'{bucket}/*json')
+    fs = fsspec.filesystem('s3')
+    fnames = fs.glob(f'{GEOM_PATH}/*json')
     opr_ids = [Path(fname).stem for fname in fnames]
     return opr_ids
 
@@ -41,7 +42,7 @@ def extract_northern_corner(polygon):
 
 def load_project_geometry(opr_id: str) -> geopandas.GeoDataFrame:
     with fsspec.open(
-        f'https://storage.googleapis.com/carbonplan-forest-offsets/carb-geometries/raw/{opr_id}.json'  # noqa
+        f'https://carbonplan-forest-offsets.s3.us-west-1.amazonaws.com/carb-geometries/raw/{opr_id}.json'  # noqa
     ) as f:
         d = json.load(f)
 

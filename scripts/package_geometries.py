@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore', message='.*initial implementation of Parquet.*
 
 
 @click.command()
-@click.option('--outpath', default='gs://carbonplan-forest-offsets/carb-geometries')
+@click.option('--outpath', default='s3://carbonplan-forest-offsets/carb-geometries')
 def main(outpath):
     """repackage project geometries into single compressed geodataframe
 
