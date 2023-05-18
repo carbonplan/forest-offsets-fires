@@ -33,7 +33,7 @@ jobs:
           # Disable pushing a 'latest' tag, as this often just causes confusion
           LATEST_TAG_OFF: true
           #
-          IMAGE_NAME: 'carbonplan/forest_offsets_fire'
+          IMAGE_NAME: 'carbonplan/forest-offsets-fires'
 
       # Lets us monitor disks getting full as images get bigger over time
       - name: Show how much disk space is left
