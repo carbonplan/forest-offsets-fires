@@ -4,22 +4,23 @@ channels:
   - nodefaults
 dependencies:
   - python=3.10
-  - fsspec
-  - tqdm
-  - click
   - beautifulsoup4
-  - pip
-  - git
+  - click
+  - fsspec
+  - fuzzywuzzy
   - geopandas
+  - git
+  - jupyterhub-singleuser>=3.0,<4.0
+  - nodejs
   - numpy
   - pandas
+  - pip
   - pre-commit
-  - pyarrow
-  - fuzzywuzzy
-  - s3fs
   - prefect<2.0
-  - jupyterhub-singleuser>=3.0,<4.0
+  - pyarrow
+  - s3fs
+  - tqdm
   - pip:
-      - carbonplan-styles
       - carbonplan-forest-offsets
+      - carbonplan-styles
       - censusgeocode
