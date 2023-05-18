@@ -1,5 +1,5 @@
 # Inherit from an upstream image
-FROM pangeo/base-notebook:2023.05.08
+FROM pangeo/base-image:2023.05.08
 
 COPY environment.yml /tmp/environment.yml
 

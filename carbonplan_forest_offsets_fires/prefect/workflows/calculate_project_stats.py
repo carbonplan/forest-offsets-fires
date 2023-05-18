@@ -16,6 +16,7 @@ NIFC_BUCKET = 'carbonplan-forest-offsets'
 
 serializer = prefect.engine.serializers.JSONSerializer()
 
+
 def get_fire_metadata(project_fires: geopandas.GeoDataFrame) -> dict:
     centroids = (
         project_fires.centroid.to_crs('epsg:4326')
@@ -83,7 +84,6 @@ def summarize_project_fires(
 
 @prefect.task
 def append_inciweb_urls(project_fires):
-
     inciweb_uris = utils.get_inciweb_uris()
 
     annotated_fires = {}

@@ -7,7 +7,8 @@ import prefect
 
 from carbonplan_forest_offsets_fires.utils import list_all_ea_opr_ids, list_all_opr_ids
 
-GEOM_PATH = f's3://carbonplan-forest-offsets/carb-geometries'
+GEOM_PATH = 's3://carbonplan-forest-offsets/carb-geometries'
+
 
 @prefect.task
 def get_all_opr_ids():

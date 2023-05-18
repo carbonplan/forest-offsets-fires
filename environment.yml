@@ -7,19 +7,19 @@ dependencies:
   - fsspec
   - tqdm
   - click
-  - beautifulsoup4 
+  - beautifulsoup4
   - pip
-  - git 
+  - git
   - geopandas
   - numpy
   - pandas
+  - pre-commit
   - pyarrow
   - fuzzywuzzy
   - s3fs
   - prefect<2.0
   - jupyterhub-singleuser>=3.0,<4.0
   - pip:
-    - carbonplan-styles
-    - carbonplan-forest-offsets
-    - censusgeocode
-
+      - carbonplan-styles
+      - carbonplan-forest-offsets
+      - censusgeocode

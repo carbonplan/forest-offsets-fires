@@ -162,7 +162,6 @@ def write_results(records: list):
 
 
 with prefect.Flow('generate-display-data') as flow:
-
     display_names = load_display_names()
     arbid_to_oprid = load_arbid_map()
     arbocs_to_date = load_issuance_to_date()

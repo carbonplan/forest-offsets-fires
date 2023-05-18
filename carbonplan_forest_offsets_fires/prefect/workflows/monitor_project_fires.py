@@ -6,7 +6,6 @@ from typing import Union
 import geopandas
 import prefect
 import requests
-from prefect.tasks.notifications import SlackTask
 
 from carbonplan_forest_offsets_fires.prefect.tasks import geometry
 
@@ -78,14 +77,13 @@ def check_send_messages(fire_counts: Union[None, dict]) -> bool:
         return False
 
 
-#send_slack_alert = SlackTask(webhook_s)
+# send_slack_alert = SlackTask(webhook_s)
 @prefect.task
 def send_slack_alert(message):
     """Temporary task until we get Prefect Cloud online"""
-    r = requests.post(
-        os.environ['SLACK_WEBHOOK_URL'], json={'text': message}
-    )
+    r = requests.post(os.environ['SLACK_WEBHOOK_URL'], json={'text': message})
     r.raise_for_status()
+
 
 with prefect.Flow('monitor-project-fires', schedule=schedule) as flow:
     active_fires = get_active_fires()
