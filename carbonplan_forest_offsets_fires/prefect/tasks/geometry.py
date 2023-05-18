@@ -58,17 +58,23 @@ def buffer_geometry(gdf: geopandas.GeoDataFrame, buffer_by: int):
 
 
 @prefect.task
-def get_project_convex_hulls(project_geoms: geopandas.GeoDataFrame) -> geopandas.GeoDataFrame:
+def get_project_convex_hulls(
+    project_geoms: geopandas.GeoDataFrame,
+) -> geopandas.GeoDataFrame:  # noqa
     """Load project geometries as convex hulls.
     This dramatically speeds up geospatial joins.
 
     Arguments:
-        project_geoms {geopandas.GeoDataFrame} -- GeoDataFrame where each row is project geom
+        project_geoms {geopandas.GeoDataFrame} --
+        GeoDataFrame where each row is project geom
 
     Returns:
-        geopandas.GeoDataFrame -- GeoDataFrame where geometry is convex hull, not geom
+        geopandas.GeoDataFrame --
+        GeoDataFrame where geometry is convex hull, not geom
     """
-    return geopandas.GeoDataFrame(project_geoms['opr_id'], geometry=project_geoms.convex_hull)
+    return geopandas.GeoDataFrame(
+        project_geoms['opr_id'], geometry=project_geoms.convex_hull
+    )  # noqa
 
 
 @prefect.task
