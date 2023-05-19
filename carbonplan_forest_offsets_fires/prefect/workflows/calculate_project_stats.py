@@ -4,7 +4,7 @@ import json
 import fsspec
 import geopandas
 import prefect
-from fuzzywuzzy import process
+from thefuzz import process
 from prefect import Flow
 from prefect.core.parameter import DateTimeParameter
 from prefect.tasks.control_flow.filter import FilterTask
