@@ -1,11 +1,10 @@
 name: Build and push container image
 
 on:
-  pull-request:
-
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   test-build:
