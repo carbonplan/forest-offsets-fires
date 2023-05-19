@@ -1,0 +1,8 @@
+carbonplan-forest-offsets
+geopandas
+numpy
+pandas
+censusgeocode
+pyarrow
+thefuzz
+prefect<2.0
