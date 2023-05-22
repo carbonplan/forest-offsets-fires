@@ -5,4 +5,4 @@ pandas
 censusgeocode
 pyarrow
 fuzzywuzzy
-prefect<2.0
+prefect<3.0
