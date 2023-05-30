@@ -1,6 +1,8 @@
 name: lance-firms-monitoring
 
 on:
+  pull_request:
+
   push:
     branches:
       - main
