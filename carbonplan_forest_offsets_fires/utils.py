@@ -42,9 +42,8 @@ def extract_northern_corner(polygon):
 
 
 def load_project_geometry(opr_id: str) -> geopandas.GeoDataFrame:
-    with fsspec.open(
-        f'https://carbonplan-forest-offsets.s3.us-west-1.amazonaws.com/carb-geometries/raw/{opr_id}.json'  # noqa
-    ) as f:
+    s3 = fsspec.filesystem('s3', anon=False)
+    with s3.open(f'carbonplan-forest-offsets/carb-geometries/raw/{opr_id}.json') as f:  # noqa
         d = json.load(f)
 
     geo = geopandas.GeoDataFrame.from_features(d)

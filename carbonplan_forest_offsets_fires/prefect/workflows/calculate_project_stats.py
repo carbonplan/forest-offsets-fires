@@ -29,7 +29,7 @@ def get_fire_metadata(project_fires: geopandas.GeoDataFrame) -> dict:
         'label_coords'
     )
     project_fires = project_fires.join(centroids).join(label_coords)
-    return project_fires.set_index('irwin_UniqueFireIdentifier')[
+    return project_fires.set_index('poly_IRWINID')[
         ['name', 'start_date', 'centroid', 'label_coords']
     ].to_dict(orient='index')
 
@@ -114,10 +114,9 @@ def write_state_as_of(as_of, annotated_projects: list):
         'overlapping_fires': annotated_projects,
     }
     # write twice if regular monitoring. once to fixed `now` file and once to dt file
+    s3 = fsspec.filesystem('s3', anon=False)
     for as_of_str in as_of_strs:
-        with fsspec.open(
-            f'gs://{NIFC_BUCKET}/fires/project_fires/state_{as_of_str}.json', 'w'
-        ) as f:
+        with s3.open(f'{NIFC_BUCKET}/fires/project_fires/state_{as_of_str}.json', 'w') as f:
             json.dump(to_write, f)
 
 
