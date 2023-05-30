@@ -7,7 +7,6 @@ import fsspec
 import geopandas
 import prefect
 from carbonplan_forest_offsets.load.issuance import load_issuance_table
-from carbonplan_forest_offsets.utils import get_centroids
 
 from carbonplan_forest_offsets_fires import utils
 from carbonplan_forest_offsets_fires.prefect.tasks.geometry import (
@@ -73,6 +72,22 @@ us_state_abbrev = {
     'Wisconsin': 'WI',
     'Wyoming': 'WY',
 }
+
+
+def get_centroids(gdf):
+    crs = '+proj=aea +lat_0=23 +lon_0=-96 +lat_1=29.5 +lat_2=45.5 +x_0=0 +y_0=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs'
+    geom = gdf.to_crs(crs).simplify(8000).buffer(8000).to_crs('lonlat').geometry.item()
+
+    if isinstance(geom, shapely.geometry.multipolygon.MultiPolygon):
+        areas = [g.area for g in geom]
+        centroids = [[g.centroid.x, g.centroid.y] for g in geom]
+        # sort by area (largest first)
+        centroids = [x for _, x in sorted(zip(areas, centroids), reverse=True)]
+    elif isinstance(geom, shapely.geometry.polygon.Polygon):
+        centroids = [[geom.centroid.x, geom.centroid.y]]
+    else:
+        raise ValueError('geom was not a polygon/multipolygon: %s' % type(geom))
+    return centroids
 
 
 @prefect.task
@@ -162,7 +177,6 @@ def write_results(records: list):
 
 
 with prefect.Flow('generate-display-data') as flow:
-
     display_names = load_display_names()
     arbid_to_oprid = load_arbid_map()
     arbocs_to_date = load_issuance_to_date()
