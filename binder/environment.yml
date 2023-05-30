@@ -1,0 +1,29 @@
+name: forests-offsets-fire
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.10
+  - beautifulsoup4
+  - click
+  - fiona==1.9.4
+  - fsspec
+  - thefuzz
+  - geopandas
+  - git
+  - jupyterhub-singleuser>=3.0,<4.0
+  - mbutil
+  - nodejs
+  - numpy
+  - pandas
+  - pip
+  - pre-commit
+  - prefect<2.0
+  - pyarrow
+  - s3fs
+  - tippecanoe
+  - tqdm
+  - pip:
+      - carbonplan-forest-offsets
+      - carbonplan-styles
+      - censusgeocode

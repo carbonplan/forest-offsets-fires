@@ -15,7 +15,9 @@ def get_nifc_filename(bucket: str, as_of: datetime = None) -> str:
     try:
         fs = get_filesystem_class('s3')
         if as_of:
-            fns = fs(account_name='carbonplan').glob(f"{bucket}/{as_of.strftime('%Y-%m-%d')}*")
+            fns = fs(account_name='carbonplan').glob(
+                f"{bucket}/{as_of.strftime('%Y-%m-%d')}*"
+            )  # noqa
         else:
             fns = fs(account_name='carbonplan').glob(f'{bucket}/*')
         sorted_fns = sorted(fns)
@@ -30,7 +32,7 @@ def load_nifc_data(nifc_filename: str) -> geopandas.GeoDataFrame:
     with fsspec.open(nifc_filename) as f:
         gdf = geopandas.read_parquet(f)
     gdf = gdf.rename(
-        columns={'attr_FireDiscoveryDateTime': 'start_date', 'poly_IncidentName': 'name'}
+        columns={'attr_FireDiscoveryDateTime': 'start_date', 'poly_IncidentName': 'name'}  # noqa
     )
     return gdf
 
@@ -89,7 +91,7 @@ def build_tippecanoe_cmd(
 
 @prefect.task
 def build_pbf_cmd(tempdir: str, stem: str) -> str:
-    return f'mb-util --image_format=pbf {tempdir}/tmp/{stem}.mbtiles {tempdir}/processed/{stem}'
+    return f'mb-util --image_format=pbf {tempdir}/tmp/{stem}.mbtiles {tempdir}/processed/{stem}'  # noqa
 
 
 @prefect.task

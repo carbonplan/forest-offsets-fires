@@ -107,7 +107,11 @@ def load_display_names():
 @prefect.task(max_retries=3, retry_delay=timedelta(seconds=5))
 def get_location_name(coords):
     results = cg.coordinates(x=coords[0], y=coords[1])
-    name = results['Counties'][0]['NAME'] + ', ' + us_state_abbrev[results['States'][0]['NAME']]
+    name = (
+        results['Counties'][0]['NAME']
+        + ', '
+        + us_state_abbrev[results['States'][0]['NAME']]  # noqa
+    )  # noqa
     return name
 
 
@@ -140,7 +144,7 @@ def get_arbocs_to_date(opr_id: str, arbocs_to_date: dict) -> int:
 
 @prefect.task
 def construct_record(
-    opr_id: str, display_name: str, arbocs: int, area: int, centroid: list, location: str
+    opr_id: str, display_name: str, arbocs: int, area: int, centroid: list, location: str  # noqa
 ) -> dict:
     return {
         'id': opr_id,
@@ -162,7 +166,6 @@ def write_results(records: list):
 
 
 with prefect.Flow('generate-display-data') as flow:
-
     display_names = load_display_names()
     arbid_to_oprid = load_arbid_map()
     arbocs_to_date = load_issuance_to_date()
@@ -183,4 +186,4 @@ with prefect.Flow('generate-display-data') as flow:
     )
     write_results(records)
 
-flow.executor = prefect.executors.LocalDaskExecutor(scheduler='processes', num_workers=2)
+flow.executor = prefect.executors.LocalDaskExecutor(scheduler='processes', num_workers=2)  # noqa

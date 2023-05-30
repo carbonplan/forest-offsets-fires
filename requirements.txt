@@ -4,5 +4,5 @@ numpy
 pandas
 censusgeocode
 pyarrow
-fuzzywuzzy
+thefuzz
 prefect<2.0
