@@ -14,7 +14,6 @@ def get_nifc_filename(bucket: str, as_of: datetime = None) -> str:
     try:
         fs = fsspec.filesystem('s3', anon=False)
         if as_of:
-
             fns = fs.glob(f"{bucket}/{as_of.strftime('%Y-%m-%d')}*")
 
         else:

@@ -11,27 +11,23 @@ on:
 jobs:
   flows:
     runs-on: ubuntu-latest
+
     env:
       SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: us-west-2
+
     timeout-minutes: 5
     container:
-      image: carbonplan/fire-monitor-prefect:2022.06.06
+      image: quay.io/carbonplan/forest-offsets-fires:latest
       options: --user root
     steps:
       - uses: actions/checkout@v3
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v0'
-        with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v0'
-
       - name: install
         run: |
           git config --global --add safe.directory /__w/forest-offsets-fires/forest-offsets-fires
-          python -m pip install pyarrow
           python -m pip install --no-deps .
           python -m pip list
 
