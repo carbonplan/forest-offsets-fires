@@ -6,15 +6,18 @@ import geopandas
 import pandas as pd
 import prefect
 import requests
-from prefect.storage import GCS
+from prefect.storage import S3
 
 CRS = '+proj=aea +lat_0=23 +lon_0=-96 +lat_1=29.5 +lat_2=45.5 +x_0=0 +y_0=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs'  # noqa
 UPLOAD_TO = 's3://carbonplan-forest-offsets/fires/nifc-data'
 
 schedule = prefect.schedules.IntervalSchedule(interval=datetime.timedelta(hours=3))
 
-NIFC_ENDPOINT = 'https://services3.arcgis.com/T4QMspbfLg3qTGWY/ArcGIS/rest/services/' \
-            'WFIGS_Interagency_Perimeters_YearToDate/FeatureServer/0/query'
+NIFC_ENDPOINT = (
+    'https://services3.arcgis.com/T4QMspbfLg3qTGWY/ArcGIS/rest/services/'
+    'WFIGS_Interagency_Perimeters_YearToDate/FeatureServer/0/query'
+)
+
 
 def get_fire_url(url):
     fires = geopandas.read_file(url).to_crs(CRS).reset_index(drop=True)
@@ -35,7 +38,8 @@ def get_nifc_perimeter_count():
 @prefect.task
 def get_paginated_fire_urls(record_count, request_size=1_000):
     """Generate urls for grabbing all NIFC data.
-    Geopandas doesnt support requests-style params, so it"s easier to just premake the urls
+    Geopandas doesnt support requests-style params,
+    so it"s easier to just premake the urls
     """
     record_offsets = range(1, record_count, request_size)
 
@@ -47,9 +51,11 @@ def get_paginated_fire_urls(record_count, request_size=1_000):
         'outFields': '*',
     }
 
-    base_url = NIFC_ENDPOINT + '?' # not sure if can go through `params` but this allows to encode url directly
+    base_url = (
+        NIFC_ENDPOINT + '?'
+    )  # not sure if can go through `params` but this allows to encode url directly
     urls = [
-        base_url + urllib.parse.urlencode(base_params) + f'&resultOffset={record_offset}'
+        base_url + urllib.parse.urlencode(base_params) + f'&resultOffset={record_offset}'  # noqa
         for record_offset in record_offsets
     ]
     return urls
@@ -57,7 +63,9 @@ def get_paginated_fire_urls(record_count, request_size=1_000):
 
 @prefect.task
 def get_nifc_perimeters(fire_urls):
-    fires = pd.concat([get_fire_url(fire_url) for fire_url in fire_urls]).reset_index(drop=True)
+    fires = pd.concat([get_fire_url(fire_url) for fire_url in fire_urls]).reset_index(
+        drop=True
+    )  # noqa
     return fires
 
 
@@ -80,7 +88,9 @@ env = {
 }
 
 
-flow.storage = GCS(bucket='carbonplan-prefect')
+flow.storage = S3(bucket='carbonplan-prefect')
 flow.run_config = prefect.run_configs.KubernetesRun(
-    labels=['gcp-us-central1-b'], image='carbonplan/fire-monitor-prefect:2022.06.06', env=env
+    labels=['gcp-us-central1-b'],
+    image='carbonplan/fire-monitor-prefect:2022.06.06',
+    env=env,  # noqa
 )

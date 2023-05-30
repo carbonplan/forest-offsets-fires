@@ -13,7 +13,7 @@ GEOM_PATH = 's3://carbonplan-forest-offsets/carb-geometries/raw'
 def list_all_opr_ids() -> list:
     """Return list of all opr ids
     Inputs:
-        bucket {str} -- gcs location of geometries
+        bucket {str} -- s3 location of geometries
     Returns:
         list -- all OPR ids as string
     """

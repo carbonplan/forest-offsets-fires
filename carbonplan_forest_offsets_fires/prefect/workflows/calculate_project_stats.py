@@ -4,7 +4,7 @@ import json
 import fsspec
 import geopandas
 import prefect
-from fuzzywuzzy import process
+from thefuzz import process
 from prefect import Flow
 from prefect.core.parameter import DateTimeParameter
 from prefect.tasks.control_flow.filter import FilterTask
@@ -23,7 +23,9 @@ def get_fire_metadata(project_fires: geopandas.GeoDataFrame) -> dict:
         .apply(lambda x: [x.centroid.x, x.centroid.y])
         .rename('centroid')
     )
-    label_coords = project_fires.convex_hull.exterior.apply(utils.extract_northern_corner).rename(
+    label_coords = project_fires.convex_hull.exterior.apply(
+        utils.extract_northern_corner
+    ).rename(  # noqa
         'label_coords'
     )
     project_fires = project_fires.join(centroids).join(label_coords)
@@ -70,7 +72,8 @@ def summarize_project_fires(
     )
     if len(intersecting_fire_idxs) > 0:
         project_fires = nifc_perimeters.iloc[intersecting_fire_idxs]
-        fire_geom = project_fires.unary_union.buffer(0)  # prevent double counting burned area
+        # prevent double counting burned area
+        fire_geom = project_fires.unary_union.buffer(0)
         burned_area = proj_geom.intersection(fire_geom).area.sum()
         burned_frac = burned_area / proj_geom.area.sum()
         fires_summary = get_fire_metadata(project_fires)
