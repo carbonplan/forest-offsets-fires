@@ -1,6 +1,8 @@
 name: fires
 
 on:
+  pull_request:
+  
   push:
     branches:
       - main
@@ -19,7 +21,7 @@ jobs:
 
     timeout-minutes: 20
     container:
-      image: carbonplan/fire-monitor-prefect:2022.06.06
+      image: quay.io/carbonplan/forest-offsets-fires:latest
       options: --user root
     steps:
       - uses: actions/checkout@v3
