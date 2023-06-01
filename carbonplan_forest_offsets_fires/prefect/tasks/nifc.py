@@ -14,7 +14,6 @@ def get_nifc_filename(bucket: str, as_of: datetime = None) -> str:
     try:
         fs = fsspec.filesystem('s3', anon=False)
         if as_of:
-
             fns = fs.glob(f"{bucket}/{as_of.strftime('%Y-%m-%d')}*")
 
         else:
@@ -22,9 +21,9 @@ def get_nifc_filename(bucket: str, as_of: datetime = None) -> str:
         sorted_fns = sorted(fns)
 
         return ''.join(['s3://', sorted_fns[-1]])
-    except IndexError:
+    except IndexError as err:
         err_msg = f'No NIFC perimeters in {bucket} for that date'
-        raise IndexError(err_msg)
+        raise IndexError(err_msg) from err
 
 
 def load_nifc_data(nifc_filename: str) -> geopandas.GeoDataFrame:

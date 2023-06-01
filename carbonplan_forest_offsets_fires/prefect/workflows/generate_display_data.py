@@ -1,6 +1,7 @@
 import json
 import pathlib
 from datetime import timedelta
+import shapely
 
 import censusgeocode as cg
 import fsspec
@@ -75,7 +76,7 @@ us_state_abbrev = {
 
 
 def get_centroids(gdf):
-    crs = '+proj=aea +lat_0=23 +lon_0=-96 +lat_1=29.5 +lat_2=45.5 +x_0=0 +y_0=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs'
+    crs = '+proj=aea +lat_0=23 +lon_0=-96 +lat_1=29.5 +lat_2=45.5 +x_0=0 +y_0=0 +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs'  # noqa
     geom = gdf.to_crs(crs).simplify(8000).buffer(8000).to_crs('lonlat').geometry.item()
 
     if isinstance(geom, shapely.geometry.multipolygon.MultiPolygon):

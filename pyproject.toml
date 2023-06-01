@@ -6,3 +6,22 @@ skip-string-normalization = true
 
 [build-system]
 requires = ["setuptools>=30.3.0", "wheel", "setuptools_scm"]
+
+[tool.ruff]
+target-version = "py38"
+exclude = [
+    "docs",
+]
+ignore = [
+]
+line-length = 100
+select = [ "B", "C", "E", "F", "W", "B9"]
+
+[tool.ruff.mccabe]
+# Flag errors (`C901`) whenever the complexity level exceeds 18.
+max-complexity = 18
+
+[tool.ruff.isort]
+combine-as-imports = true
+known-first-party = ["carbonplan"]
+known-third-party = ["intake", "setuptools"]
