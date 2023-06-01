@@ -4,10 +4,10 @@ import json
 import fsspec
 import geopandas
 import prefect
-from thefuzz import process
 from prefect import Flow
 from prefect.core.parameter import DateTimeParameter
 from prefect.tasks.control_flow.filter import FilterTask
+from thefuzz import process
 
 from carbonplan_forest_offsets_fires import utils
 from carbonplan_forest_offsets_fires.prefect.tasks import geometry, nifc
