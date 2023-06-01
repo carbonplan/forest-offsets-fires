@@ -4,3 +4,7 @@
 
 def test_import_carbonplan_styles():
     pass
+
+
+def test_import_tippecanoe():
+    pass
