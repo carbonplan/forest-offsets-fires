@@ -1,12 +1,12 @@
 import json
 import pathlib
 from datetime import timedelta
-import shapely
 
 import censusgeocode as cg
 import fsspec
 import geopandas
 import prefect
+import shapely
 from carbonplan_forest_offsets.load.issuance import load_issuance_table
 
 from carbonplan_forest_offsets_fires import utils
