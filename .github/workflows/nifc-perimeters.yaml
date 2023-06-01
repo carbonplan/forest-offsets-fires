@@ -2,7 +2,7 @@ name: fires
 
 on:
   pull_request:
-  
+
   push:
     branches:
       - main
@@ -21,7 +21,7 @@ jobs:
 
     timeout-minutes: 20
     container:
-      image: quay.io/carbonplan/forest-offsets-fires:latest
+      image: quay.io/carbonplan/forest-offsets-fires:2264aafeb1bf
       options: --user root
     steps:
       - uses: actions/checkout@v3
