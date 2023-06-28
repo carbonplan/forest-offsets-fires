@@ -30,7 +30,7 @@ jobs:
         shell: bash -l {0}
 
     steps:
-      - uses: actions/checkout@v3
+      # - uses: actions/checkout@v3
 
       - uses: conda-incubator/setup-miniconda@v2
         with:
@@ -70,6 +70,9 @@ jobs:
       #     ./mb-util -h
       #     sudo python setup.py install
 
+      - name: list
+        run: |
+          python -m pip list
       - name: run-script
         run: |
           # python carbonplan_forest_offsets_fires/scripts/firms_nrt_ETL.py
