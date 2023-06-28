@@ -30,10 +30,10 @@ jobs:
     #     shell: bash -l {0}
 
     steps:
-      # - name: try tippacanoe
-      #   shell: bash -l {0}
-      #   run: |
-      #     tippecanoe --help
+      - name: try tippacanoe
+        shell: bash -l {0}
+        run: |
+          tippecanoe --help
 
       - uses: actions/checkout@v3
       - name: install
