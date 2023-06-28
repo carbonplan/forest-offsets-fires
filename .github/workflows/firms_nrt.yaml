@@ -27,6 +27,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: install tippacanoe
+        run: |
+          git clone https://github.com/mapbox/tippecanoe.git
+          cd tippecanoe
+          make -j
+          make install
+
+      - name: install mbutil
+        run: |
+          git clone https://github.com/mapbox/mbutil.git
+          cd mbutil
+          ./mb-util -h
+          sudo python setup.py install
+
       - name: run-script
         run: |
           # python carbonplan_forest_offsets_fires/scripts/firms_nrt_ETL.py
