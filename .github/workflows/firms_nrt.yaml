@@ -25,9 +25,9 @@ jobs:
       image: quay.io/carbonplan/forest-offsets-fires:latest
       options: --user root
 
-    # defaults:
-    #   run:
-    #     shell: bash -l {0}
+    defaults:
+      run:
+        shell: bash -l {0}
 
     steps:
       - name: try tippacanoe
