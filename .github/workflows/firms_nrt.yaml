@@ -35,4 +35,6 @@ jobs:
 
       - name: run-script
         run: |
-          python carbonplan_forest_offsets_fires/scripts/firms_nrt_ETL.py
+          # python carbonplan_forest_offsets_fires/scripts/firms_nrt_ETL.py
+          python ./carbonplan_forest_offsets_fires/scripts/firms_nrt_ETL.py
+
