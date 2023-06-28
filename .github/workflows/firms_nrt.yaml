@@ -47,10 +47,10 @@ jobs:
         run: |
           mamba install -c conda-forge tippecanoe mbutil
 
-      - name: try tippacanoe
-        shell: bash -l {0}
-        run: |
-          tippecanoe --help
+      # - name: try tippacanoe
+      #   shell: bash -l {0}
+      #   run: |
+      #     tippecanoe --help
 
       # - name: install tippacanoe
       #   run: |
@@ -68,4 +68,5 @@ jobs:
 
       - name: run-script
         run: |
+          # python carbonplan_forest_offsets_fires/scripts/firms_nrt_ETL.py
           python3 scripts/firms_nrt_ETL.py
