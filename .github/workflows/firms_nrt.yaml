@@ -1,13 +1,13 @@
-name: lance-firms-monitoring
+name: FIRMS NRT
 
 on:
-  #   pull_request:
+  pull_request:
 
   push:
     branches:
       - main
   schedule:
-    - cron: '12 */8 * * *' # every 8th hour
+    - cron: 0 6 * * * # 11 am PT  = 6 UTC
   workflow_dispatch:
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
+      FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: us-west-2
@@ -33,6 +33,6 @@ jobs:
           python -m pip install --no-deps .
           python -m pip list
 
-      - name: run-flows
+      - name: run-script
         run: |
-          prefect run -p ./carbonplan_forest_offsets_fires/prefect/workflows/monitor_project_fires.py
+          python  ./carbonplan_forest_offsets_fires/scripts/firms_nrt_ETL.py

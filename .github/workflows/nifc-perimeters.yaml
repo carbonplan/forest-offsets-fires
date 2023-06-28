@@ -1,7 +1,7 @@
 name: fires
 
 on:
-  pull_request:
+  #   pull_request:
 
   push:
     branches:
