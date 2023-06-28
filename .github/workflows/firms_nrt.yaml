@@ -48,6 +48,7 @@ jobs:
           mamba install -c conda-forge tippecanoe mbutil
 
       - name: try tippacanoe
+        shell: bash -l {0}
         run: |
           tippecanoe -h
 
