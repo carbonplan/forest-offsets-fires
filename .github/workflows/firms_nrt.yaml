@@ -27,14 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: install
-        run: |
-          git config --global --add safe.directory /__w/forest-offsets-fires/forest-offsets-fires
-          python -m pip install --no-deps .
-          python -m pip list
-
       - name: run-script
         run: |
           # python carbonplan_forest_offsets_fires/scripts/firms_nrt_ETL.py
-          python ./carbonplan_forest_offsets_fires/scripts/firms_nrt_ETL.py
-
+          python scripts/firms_nrt_ETL.py
