@@ -25,6 +25,10 @@ jobs:
       image: quay.io/carbonplan/forest-offsets-fires:latest
       options: --user root
 
+    defaults:
+      run:
+        shell: bash -l {0}
+
     steps:
       - uses: actions/checkout@v3
 
@@ -69,4 +73,4 @@ jobs:
       - name: run-script
         run: |
           # python carbonplan_forest_offsets_fires/scripts/firms_nrt_ETL.py
-          python3 scripts/firms_nrt_ETL.py
+          python scripts/firms_nrt_ETL.py
