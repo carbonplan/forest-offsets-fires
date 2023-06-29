@@ -137,7 +137,7 @@ def create_pyarmids(raster_path: str, pyramid_path: str, levels: int = levels):
 path_dict = create_paths()
 df = read_viirs(min_lat, max_lat, min_lon, max_lon, pixels_per_tile, day_range)
 df = munge_df(df)
-# ds = rasterize_frp(df)
+ds = rasterize_frp(df)
 # ds = mask_ds(ds)
 # write_raster_to_zarr(ds, path_dict['s3_raster'])
 # create_pyarmids(path_dict['s3_raster'], path_dict['s3_pyramid'], levels)
