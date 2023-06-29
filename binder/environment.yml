@@ -35,4 +35,5 @@ dependencies:
   - pip:
       - carbonplan-forest-offsets
       - carbonplan-styles
+      - carbonplan-data
       - censusgeocode
