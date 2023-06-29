@@ -110,7 +110,8 @@ def rasterize_frp(df: pd.DataFrame) -> xr.Dataset:
 def mask_ds(ds: xr.Dataset) -> xr.Dataset:
     # mask conus + alaska
     mask = regionmask.defined_regions.natural_earth_v5_0_0.us_states_50.mask(ds)
-    return mask
+    mds = mask.to_dataset(name="active")
+    return mds
 
 
 def write_raster_to_zarr(ds: xr.Dataset, path: str):
@@ -137,6 +138,6 @@ path_dict = create_paths()
 df = read_viirs(min_lat, max_lat, min_lon, max_lon, pixels_per_tile, day_range)
 df = munge_df(df)
 ds = rasterize_frp(df)
-# ds = mask_ds(ds)
-# write_raster_to_zarr(ds, path_dict['s3_raster'])
-# create_pyarmids(path_dict['s3_raster'], path_dict['s3_pyarmid'], levels)
+ds = mask_ds(ds)
+write_raster_to_zarr(ds, path_dict['s3_raster'])
+create_pyarmids(path_dict['s3_raster'], path_dict['s3_pyramid'], levels)
