@@ -91,6 +91,15 @@ def munge_df(df: pd.DataFrame, epsg: str = "4326") -> pd.DataFrame:
     return df[['latitude', 'longitude', 'acq_date', 'registered']]
 
 
+def df_to_ds(df: pd.DataFrame) -> xr.Dataset:
+    # converts viirs location dataframe to xarray dataset for masking
+    df['time'] = pd.to_datetime(df['acq_date'])
+    df = df.set_index('time')
+    ds = xr.Dataset.from_dataframe(df)
+    ds = ds.set_coords(("time", "latitude", "longitude"))
+    return ds
+
+
 def rasterize_frp(df: pd.DataFrame) -> xr.Dataset:
     active = pygmt.xyz2grd(
         data=df[['longitude', 'latitude', 'registered']],
@@ -107,11 +116,15 @@ def rasterize_frp(df: pd.DataFrame) -> xr.Dataset:
     return active
 
 
-def mask_ds(ds: xr.Dataset) -> xr.Dataset:
+def mask_ds(ds: xr.Dataset) -> pd.DataFrame:
     # mask conus + alaska
-    mask = regionmask.defined_regions.natural_earth_v5_0_0.us_states_50.mask(ds)
-    mds = mask.to_dataset(name="active")
-    return mds
+    mask = regionmask.defined_regions.natural_earth_v5_0_0.us_states_50.mask(
+        ds, lon_name='longitude', lat_name='latitude'
+    )
+
+    mds = mask.to_dataset(name="registered")
+    df = mds.to_dataframe()
+    return df
 
 
 def write_raster_to_zarr(ds: xr.Dataset, path: str):
@@ -136,8 +149,9 @@ def create_pyarmids(raster_path: str, pyramid_path: str, levels: int = levels):
 
 path_dict = create_paths()
 df = read_viirs(min_lat, max_lat, min_lon, max_lon, pixels_per_tile, day_range)
-df = munge_df(df)
-ds = rasterize_frp(df)
-ds = mask_ds(ds)
-# write_raster_to_zarr(ds, path_dict['s3_raster'])
-# create_pyarmids(path_dict['s3_raster'], path_dict['s3_pyramid'], levels)
+mdf = munge_df(df)
+ds = df_to_ds(mdf)
+masked_df = mask_ds(ds)
+rasterized_ds = rasterize_frp(masked_df)
+write_raster_to_zarr(rasterized_ds, path_dict['s3_raster'])
+create_pyarmids(path_dict['s3_raster'], path_dict['s3_pyramid'], levels)
