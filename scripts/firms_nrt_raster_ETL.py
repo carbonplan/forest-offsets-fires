@@ -173,6 +173,6 @@ for child in dt.children:
         dt[child].ds, codec_config={"id": "zlib", "level": 1}, float_dtype="float32"
     )
 print('2')
-
+dt.load()
 # dt.to_zarr(pyramid_path, consolidated=True, mode='w')
 # print('3')
