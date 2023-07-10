@@ -154,4 +154,21 @@ ds = df_to_ds(mdf)
 masked_df = mask_ds(ds)
 rasterized_ds = rasterize_frp(masked_df)
 write_raster_to_zarr(rasterized_ds, path_dict['s3_raster'])
-create_pyarmids(path_dict['s3_raster'], path_dict['s3_pyramid'], levels)
+
+
+raster_path = path_dict['s3_raster']
+pyramid_path = path_dict['s3_pyramid']
+print('0')
+ds = xr.open_zarr(raster_path)
+dt = pyramid_reproject(ds.rio.write_crs("EPSG:4326"), levels=levels, resampling="sum")
+print('1')
+
+for child in dt.children:
+    dt[child]['active'] = xr.where(dt[child]['active'] > 0, 1, np.nan)
+    dt[child].ds = set_web_zarr_encoding(
+        dt[child].ds, codec_config={"id": "zlib", "level": 1}, float_dtype="float32"
+    )
+print('2')
+
+dt.to_zarr(pyramid_path, consolidated=True, mode='w')
+print('3')
