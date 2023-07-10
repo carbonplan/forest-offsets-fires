@@ -152,8 +152,12 @@ df = read_viirs(min_lat, max_lat, min_lon, max_lon, pixels_per_tile, day_range)
 mdf = munge_df(df)
 ds = df_to_ds(mdf)
 masked_df = mask_ds(ds)
+print('a')
+
 rasterized_ds = rasterize_frp(masked_df)
+print('b')
 write_raster_to_zarr(rasterized_ds, path_dict['s3_raster'])
+print('c')
 
 
 raster_path = path_dict['s3_raster']
