@@ -163,7 +163,7 @@ print('c')
 raster_path = path_dict['s3_raster']
 pyramid_path = path_dict['s3_pyramid']
 print('0')
-ds = xr.open_zarr(raster_path).load()
+# ds = xr.open_zarr(raster_path).load()
 # dt = pyramid_reproject(ds.rio.write_crs("EPSG:4326"), levels=levels, resampling="sum")
 # print('1')
 
