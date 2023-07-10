@@ -163,6 +163,7 @@ print('0')
 ds = xr.open_zarr(raster_path)
 ds.load()
 
+
 dt = pyramid_reproject(ds.rio.write_crs("EPSG:4326"), levels=levels, resampling="sum")
 
 for child in dt.children:
@@ -172,5 +173,6 @@ for child in dt.children:
     )
     dt[child].load()
 
+del ds
 # dt.to_zarr(pyramid_path, consolidated=True, mode='w')
 # print('3')
