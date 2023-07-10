@@ -5,7 +5,9 @@ import xarray as xr  # noqa
 import pygmt
 
 from ndpyramid import pyramid_reproject
-import regionmask
+import geopandas as gpd
+from geopandas.tools import sjoin
+
 import rioxarray  # noqa
 import numpy as np
 from carbonplan_data.utils import set_zarr_encoding as set_web_zarr_encoding
@@ -116,15 +118,21 @@ def rasterize_frp(df: pd.DataFrame) -> xr.Dataset:
     return active
 
 
-def mask_ds(ds: xr.Dataset) -> pd.DataFrame:
-    # mask conus + alaska
-    mask = regionmask.defined_regions.natural_earth_v5_0_0.us_states_50.mask(
-        ds, lon_name='longitude', lat_name='latitude'
-    )
+## Instead of using regionmask.mask, create gdf from points and geometry from natural_earth, 
+# mask points inside of conus -> rasterize
+def mask_df(df: pd.DataFrame) -> pd.DataFrame:
 
-    mds = mask.to_dataset(name="registered")
-    df = mds.to_dataframe()
-    return df
+    gdf = gpd.GeoDataFrame(
+        df, geometry=gpd.points_from_xy(df.longitude, df.latitude), crs="EPSG:4326"
+    )    
+    world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+    us =  world[world.name == "United States of America"]
+
+    masked_points = sjoin(gdf, us, how='left')
+    masked_points = masked_points[['latitude',  'longitude',  'acq_date',  'registered']]
+
+
+    return masked_points
 
 
 def write_raster_to_zarr(ds: xr.Dataset, path: str):
@@ -150,27 +158,8 @@ def create_pyarmids(raster_path: str, pyramid_path: str, levels: int = levels):
 path_dict = create_paths()
 df = read_viirs(min_lat, max_lat, min_lon, max_lon, pixels_per_tile, day_range)
 mdf = munge_df(df)
-ds = df_to_ds(mdf)
-masked_df = mask_ds(ds)
-
-del ds
+masked_df = mask_df(mdf)
 rasterized_ds = rasterize_frp(masked_df)
+
 write_raster_to_zarr(rasterized_ds, path_dict['s3_raster'])
 create_pyarmids(path_dict['s3_raster'], path_dict['s3_pyramid'], levels)
-
-# raster_path = path_dict['s3_raster']
-# pyramid_path = path_dict['s3_pyramid']
-# print('0')
-# ds = xr.open_zarr(raster_path)
-
-# dt = pyramid_reproject(ds.rio.write_crs("EPSG:4326"), levels=levels, resampling="sum")
-
-# for child in dt.children:
-#     dt[child]['active'] = xr.where(dt[child]['active'] > 0, 1, np.nan)
-#     dt[child].ds = set_web_zarr_encoding(
-#         dt[child].ds, codec_config={"id": "zlib", "level": 1}, float_dtype="float32"
-#     )
-
-# del ds
-# dt.to_zarr(pyramid_path, consolidated=True, mode='w')
-# # print('3')
