@@ -174,5 +174,5 @@ for child in dt.children:
     dt[child].load()
 
 del ds
-# dt.to_zarr(pyramid_path, consolidated=True, mode='w')
+dt.to_zarr(pyramid_path, consolidated=True, mode='w')
 # print('3')
