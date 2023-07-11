@@ -33,7 +33,7 @@ def create_paths() -> dict:
     :return: data path dict
     :rtype: dict
     """
-    s3_raster = "s3://carbonplan-forest-offsets/fires/firms_nrt/raster_test/"
+    s3_raster = "s3://carbonplan-forest-offsets/fires/firms_nrt/raster/"
     s3_pyramid_staging = "s3://carbonplan-forest-offsets/fires/firms_nrt/pyramid/staging/"
 
     return {
