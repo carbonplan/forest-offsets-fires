@@ -173,7 +173,7 @@ def create_pyarmids(raster_path: str, pyramid_path: str, levels: int = levels):
 
 
 def transfer_pyramid_to_prod(pyramid_staging_path: str, pyramid_prod_path: str):
-    copy_str = f"aws s3 cp {pyramid_staging_path} {pyramid_prod_path}"
+    copy_str = f"aws s3 cp {pyramid_staging_path} {pyramid_prod_path} --recursive"
     subprocess.check_call(copy_str, shell=True)
 
 
