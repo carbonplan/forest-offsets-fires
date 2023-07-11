@@ -4,6 +4,7 @@ channels:
   - nodefaults
 dependencies:
   - python=3.10
+  - awscli
   - beautifulsoup4
   - click
   - dask
