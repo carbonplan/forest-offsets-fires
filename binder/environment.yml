@@ -38,3 +38,4 @@ dependencies:
       - carbonplan-styles
       - carbonplan-data
       - censusgeocode
+      - skyplane[aws]
