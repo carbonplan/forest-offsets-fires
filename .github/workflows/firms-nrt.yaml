@@ -32,10 +32,15 @@ jobs:
           python -m pip install --no-deps .
           python -m pip install awscli
 
-      - name: run-script
-        run: |
-          python scripts/firms_nrt_raster_ETL.py
+      # - name: run-script
+      #   run: |
+      #     python scripts/firms_nrt_raster_ETL.py
 
-      - name: Staging to Production
+      # - name: Staging to Production
+      #   run: |
+      #     aws s3 cp s3://carbonplan-forest-offsets/fires/firms_nrt/pyramid/staging_test/ s3://carbonplan-forest-offsets/web/tiles/current-firms-hotspots_test/ --recursive
+
+      - name: Skyplane
         run: |
-          aws s3 cp s3://carbonplan-forest-offsets/fires/firms_nrt/pyramid/staging_test/ s3://carbonplan-forest-offsets/web/tiles/current-firms-hotspots_test/ --recursive
+          skyplane init -y --disable-config-azure --disable-config-gcp
+          skyplane cp -r -y s3://carbonplan-forest-offsets/fires/firms_nrt/pyramid/staging_test/ s3://carbonplan-forest-offsets/web/tiles/current-firms-hotspots_test/"

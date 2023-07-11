@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import xarray as xr  # noqa
 import pygmt
-import subprocess
 from ndpyramid import pyramid_reproject
 import geopandas as gpd
 from geopandas.tools import sjoin
@@ -172,11 +171,6 @@ def create_pyarmids(raster_path: str, pyramid_path: str, levels: int = levels):
     dt.to_zarr(pyramid_path, consolidated=True, mode='w')
 
 
-def transfer_pyramid_to_prod(pyramid_staging_path: str, pyramid_prod_path: str):
-    copy_str = f"aws s3 cp {pyramid_staging_path} {pyramid_prod_path} --recursive"
-    subprocess.check_call(copy_str, shell=True)
-
-
 path_dict = create_paths()
 df = read_viirs(min_lat, max_lat, min_lon, max_lon, pixels_per_tile, day_range)
 mdf = munge_df(df)
@@ -184,4 +178,3 @@ masked_df = mask_df(mdf)
 rasterized_ds = rasterize_frp(masked_df)
 write_raster_to_zarr(rasterized_ds, path_dict['s3_raster'])
 create_pyarmids(path_dict['s3_raster'], path_dict['s3_pyramid_staging'], levels)
-# transfer_pyramid_to_prod(path_dict['s3_pyramid_staging'], path_dict['s3_pyramid_prod'])
