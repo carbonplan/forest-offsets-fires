@@ -26,7 +26,7 @@ max_lon = -66
 
 pixels_per_tile = 512 * 2
 day_range = 3
-levels = 6
+levels = 9
 
 
 def create_paths() -> dict:
@@ -118,24 +118,27 @@ def rasterize_frp(df: pd.DataFrame) -> xr.Dataset:
     return active
 
 
-## Instead of using regionmask.mask, create gdf from points and geometry from natural_earth, 
-# mask points inside of conus -> rasterize
 def mask_df(df: pd.DataFrame) -> pd.DataFrame:
-
     gdf = gpd.GeoDataFrame(
         df, geometry=gpd.points_from_xy(df.longitude, df.latitude), crs="EPSG:4326"
-    )    
+    )
     world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-    us =  world[world.name == "United States of America"]
+    us = world[world.name == "United States of America"]
 
-    masked_points = sjoin(gdf, us, how='left')
-    masked_points = masked_points[['latitude',  'longitude',  'acq_date',  'registered']]
-
+    masked_points = sjoin(gdf, us, how='inner')
+    masked_points = masked_points[['latitude', 'longitude', 'acq_date', 'registered']]
 
     return masked_points
 
 
 def write_raster_to_zarr(ds: xr.Dataset, path: str):
+    """Writes Xarray dataset to Zarr. Does not write empty chunks and overwrites existing data
+
+    :param ds: Finalized Xarray dataset
+    :type ds: xr.Dataset
+    :param path: Location to write
+    :type path: str
+    """
     ds.to_zarr(
         path,
         encoding={'active': {"write_empty_chunks": False, "dtype": 'i1'}},
@@ -145,6 +148,15 @@ def write_raster_to_zarr(ds: xr.Dataset, path: str):
 
 
 def create_pyarmids(raster_path: str, pyramid_path: str, levels: int = levels):
+    """Creates pyramids from Zarr store
+
+    :param raster_path: Input Zarr store
+    :type raster_path: str
+    :param pyramid_path: Output Pyramid path
+    :type pyramid_path: str
+    :param levels: Number of pyramid levels to generate
+    :type levels: int, optional
+    """
     ds = xr.open_zarr(raster_path)
     dt = pyramid_reproject(ds.rio.write_crs("EPSG:4326"), levels=levels, resampling="sum")
     for child in dt.children:
@@ -160,6 +172,5 @@ df = read_viirs(min_lat, max_lat, min_lon, max_lon, pixels_per_tile, day_range)
 mdf = munge_df(df)
 masked_df = mask_df(mdf)
 rasterized_ds = rasterize_frp(masked_df)
-
 write_raster_to_zarr(rasterized_ds, path_dict['s3_raster'])
 create_pyarmids(path_dict['s3_raster'], path_dict['s3_pyramid'], levels)

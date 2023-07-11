@@ -1,7 +1,7 @@
 name: Build and push container image
 
 on:
-  # pull_request:
+  pull_request:
   paths:
     - 'binder/**.yml'
 
