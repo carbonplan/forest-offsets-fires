@@ -34,8 +34,8 @@ def create_paths() -> dict:
     :rtype: dict
     """
     s3_raster = "s3://carbonplan-forest-offsets/fires/firms_nrt/raster_test/"
-    s3_pyramid_staging = "s3://carbonplan-forest-offsets/fires/firms_nrt/pyramid/staging_test/"
-    s3_pyramid_prod = "s3://carbonplan-forest-offsets/web/tiles/current-firms-hotspots_test/"
+    s3_pyramid_staging = "s3://carbonplan-forest-offsets/fires/firms_nrt/pyramid/staging/"
+    s3_pyramid_prod = "s3://carbonplan-forest-offsets/web/tiles/current-firms-hotspots/"
 
     return {
         's3_raster': s3_raster,

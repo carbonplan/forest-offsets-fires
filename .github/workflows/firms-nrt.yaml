@@ -42,4 +42,4 @@ jobs:
 
       - name: Skyplane Copy
         run: |
-          skyplane cp -r -y s3://carbonplan-forest-offsets/fires/firms_nrt/pyramid/staging_test/ s3://carbonplan-forest-offsets/web/tiles/current-firms-hotspots_test/
+          skyplane cp -r -y s3://carbonplan-forest-offsets/fires/firms_nrt/pyramid/staging/ s3://carbonplan-forest-offsets/web/tiles/current-firms-hotspots/
