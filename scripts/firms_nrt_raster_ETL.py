@@ -24,7 +24,7 @@ max_lon = -66
 
 pixels_per_tile = 512 * 2
 day_range = 3
-levels = 2
+levels = 9
 
 
 def create_paths() -> dict:
@@ -35,12 +35,10 @@ def create_paths() -> dict:
     """
     s3_raster = "s3://carbonplan-forest-offsets/fires/firms_nrt/raster_test/"
     s3_pyramid_staging = "s3://carbonplan-forest-offsets/fires/firms_nrt/pyramid/staging/"
-    s3_pyramid_prod = "s3://carbonplan-forest-offsets/web/tiles/current-firms-hotspots/"
 
     return {
         's3_raster': s3_raster,
         's3_pyramid_staging': s3_pyramid_staging,
-        's3_pyramid_prod': s3_pyramid_prod,
     }
 
 
