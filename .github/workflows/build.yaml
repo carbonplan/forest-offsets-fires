@@ -2,8 +2,8 @@ name: Build and push container image
 
 on:
   pull_request:
-  paths:
-    - 'binder/**.yml'
+    paths:
+      - 'binder/**.yml'
 
 jobs:
   test-build:
