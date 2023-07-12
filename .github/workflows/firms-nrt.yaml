@@ -7,7 +7,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: 0 6 * * * # 11 am PT  = 6 UTC
+    - cron: '0 */6 * * *' # every 6th hour
   workflow_dispatch:
 
 jobs:
