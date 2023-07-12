@@ -4,14 +4,17 @@ channels:
   - nodefaults
 dependencies:
   - python=3.10
+  - awscli
   - beautifulsoup4
   - click
+  - dask
   - fiona==1.9.4
   - fsspec
   - geopandas
   - git
   - jupyterhub-singleuser>=3.0,<4.0
   - mbutil
+  - ndpyramid
   - nodejs
   - numpy
   - pandas
@@ -19,12 +22,20 @@ dependencies:
   - pre-commit
   - prefect<2.0
   - pyarrow
+  - pygmt
+  - regionmask
   - s3fs
   - shapely
   - thefuzz
   - tippecanoe
   - tqdm
+  - xarray==2023.01.0
+  - xesmf
+  - zarr
+  - rioxarray
   - pip:
       - carbonplan-forest-offsets
       - carbonplan-styles
+      - carbonplan-data
       - censusgeocode
+      - skyplane[aws]
