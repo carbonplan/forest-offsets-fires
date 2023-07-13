@@ -1,7 +1,7 @@
 name: FIRMS NRT
 
 on:
-  # pull_request:
+  pull_request:
 
   push:
     branches:
@@ -30,7 +30,6 @@ jobs:
       - name: install
         run: |
           python -m pip install --no-deps .
-          python -m pip install skyplane[aws]
 
       - name: run-script
         run: |
