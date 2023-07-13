@@ -4,8 +4,7 @@ import xarray as xr  # noqa
 import pygmt
 from ndpyramid import pyramid_reproject
 import geopandas as gpd
-from geopandas.tools import sjoin
-
+from datetime import datetime
 import rioxarray  # noqa
 import numpy as np
 from carbonplan_data.utils import set_zarr_encoding as set_web_zarr_encoding
@@ -33,12 +32,14 @@ def create_paths() -> dict:
     :return: data path dict
     :rtype: dict
     """
-    s3_raster = "s3://carbonplan-forest-offsets/fires/firms_nrt/raster/"
+    s3_raster = f"s3://carbonplan-forest-offsets/fires/firms_nrt/raster/{datetime.now().strftime('%Y-%m-%d')}/"
     s3_pyramid_staging = "s3://carbonplan-forest-offsets/fires/firms_nrt/pyramid/staging/"
+    s3_pyramid = "s3://carbonplan-forest-offsets/web/tiles/current-firms-hotspots/"
 
     return {
         's3_raster': s3_raster,
         's3_pyramid_staging': s3_pyramid_staging,
+        's3_pyramid': s3_pyramid,
     }
 
 
@@ -86,13 +87,10 @@ def munge_df(df: pd.DataFrame, epsg: str = "4326") -> pd.DataFrame:
     """
 
     # only select high confidence
-    df = df[df['confidence'] == 'h']
+    df = df[df['confidence'] != 'l']
     df['registered'] = 1
-    # format acquisition date
-    df['acq_date'] = pd.to_datetime(df['acq_date']).dt.strftime('%Y-%m-%d')
-
     # subset dataframe
-    return df[['latitude', 'longitude', 'acq_date', 'registered']]
+    return df[['latitude', 'longitude', 'registered']]
 
 
 def df_to_ds(df: pd.DataFrame) -> xr.Dataset:
@@ -127,8 +125,8 @@ def mask_df(df: pd.DataFrame) -> pd.DataFrame:
     world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
     us = world[world.name == "United States of America"]
 
-    masked_points = sjoin(gdf, us, how='inner')
-    masked_points = masked_points[['latitude', 'longitude', 'acq_date', 'registered']]
+    masked_points = gdf.sjoin(us, how='inner')
+    masked_points = masked_points[['latitude', 'longitude', 'registered']]
 
     return masked_points
 
@@ -149,7 +147,7 @@ def write_raster_to_zarr(ds: xr.Dataset, path: str):
     )
 
 
-def create_pyarmids(raster_path: str, pyramid_path: str, levels: int = levels):
+def create_pyramids(raster_path: str, pyramid_path: str, levels: int = levels):
     """Creates pyramids from Zarr store
 
     :param raster_path: Input Zarr store
@@ -159,8 +157,8 @@ def create_pyarmids(raster_path: str, pyramid_path: str, levels: int = levels):
     :param levels: Number of pyramid levels to generate
     :type levels: int, optional
     """
-    ds = xr.open_zarr(raster_path)
-    dt = pyramid_reproject(ds.rio.write_crs("EPSG:4326"), levels=levels, resampling="sum")
+    ds = xr.open_zarr(raster_path).rio.write_crs("EPSG:4326")
+    dt = pyramid_reproject(ds, levels=levels, resampling="sum")
     for child in dt.children:
         dt[child]['active'] = xr.where(dt[child]['active'] > 0, 1, np.nan)
         dt[child].ds = set_web_zarr_encoding(
@@ -175,4 +173,4 @@ mdf = munge_df(df)
 masked_df = mask_df(mdf)
 rasterized_ds = rasterize_frp(masked_df)
 write_raster_to_zarr(rasterized_ds, path_dict['s3_raster'])
-create_pyarmids(path_dict['s3_raster'], path_dict['s3_pyramid_staging'], levels)
+create_pyramids(path_dict['s3_raster'], path_dict['s3_pyramid_staging'], levels)
