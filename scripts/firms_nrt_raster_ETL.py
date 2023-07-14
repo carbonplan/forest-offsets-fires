@@ -93,15 +93,6 @@ def munge_df(df: pd.DataFrame, epsg: str = "4326") -> pd.DataFrame:
     return df[['latitude', 'longitude', 'registered']]
 
 
-def df_to_ds(df: pd.DataFrame) -> xr.Dataset:
-    # converts viirs location dataframe to xarray dataset for masking
-    df['time'] = pd.to_datetime(df['acq_date'])
-    df = df.set_index('time')
-    ds = xr.Dataset.from_dataframe(df)
-    ds = ds.set_coords(("time", "latitude", "longitude"))
-    return ds
-
-
 def rasterize_frp(df: pd.DataFrame) -> xr.Dataset:
     active = pygmt.xyz2grd(
         data=df[['longitude', 'latitude', 'registered']],
