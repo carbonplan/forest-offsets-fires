@@ -28,9 +28,8 @@ dependencies:
   - thefuzz
   - tippecanoe
   - tqdm
-  - xarray==2023.01.0
   - xesmf
-  - zarr
+  - zarr>=2.11
   - rioxarray
   - pip:
       - carbonplan-forest-offsets
@@ -39,3 +38,4 @@ dependencies:
       - censusgeocode
       - skyplane[aws]
       - git+https://github.com/carbonplan/ndpyramid.git
+      - git+https://github.com/pydata/xarray.git
