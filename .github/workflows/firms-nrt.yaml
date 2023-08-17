@@ -27,11 +27,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: install
-        run: |
-          python -m pip install --no-deps .
 
-      - name: run-script
+      - name: Install
+        run: |
+          git config --global --add safe.directory /__w/forest-offsets-fires/forest-offsets-fires
+          python -m pip install --no-deps .
+          python -m pip list
+
+      - name: Generate pyramids
         run: |
           python scripts/firms_nrt_raster_ETL.py
 
