@@ -48,14 +48,19 @@ def write_raster_to_zarr(ds: xr.Dataset, path: str):
 
 
 path_dict = create_paths()
+print("Reading data")
 df = read_viirs(
     min_lat=min_lat, max_lat=max_lat, min_lon=min_lon, max_lon=max_lon, day_range=day_range
 )
 mdf = munge_df(df)
 masked_df = mask_df(mdf)
+print("Rasterizing data")
 rasterized_ds = rasterize_frp(
     masked_df, min_lat=min_lat, max_lat=max_lat, min_lon=min_lon, max_lon=max_lon
 )
+print(f"Writing rasterized data to {path_dict['s3_raster']}")
 write_raster_to_zarr(rasterized_ds, path_dict['s3_raster'])
+print(f"Creating pyramids from {path_dict['s3_raster']}")
 dt = create_pyramids(path_dict['s3_raster'], levels=levels)
+print(f"Writing pyramids to {path_dict['s3_pyramid_staging']}")
 dt.to_zarr(path_dict['s3_pyramid_staging'], consolidated=True, mode='w', write_empty_chunks=False)
