@@ -2,17 +2,23 @@ import os
 import pandas as pd
 import xarray as xr  # noqa
 import pygmt
-from ndpyramid import pyramid_reproject
 import geopandas as gpd
 import rioxarray  # noqa
 import numpy as np
+from ndpyramid import pyramid_reproject
 from carbonplan_data.utils import set_zarr_encoding as set_web_zarr_encoding
 
 key = os.environ["FIRMS_MAP_KEY"]
 pixels_per_tile = 256
 
 
-def read_viirs(
+def read_viirs_historical() -> pd.DataFrame:
+    return pd.read_parquet(
+        's3://carbonplan-forest-offsets/fires/firms/fire_nrt_SV-C2_28285.parquet'
+    )
+
+
+def read_viirs_nrt(
     *,
     min_lat: float,
     max_lat: float,
