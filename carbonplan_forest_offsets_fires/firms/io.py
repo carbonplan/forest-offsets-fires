@@ -3,7 +3,7 @@ import pandas as pd
 import geopandas as gpd
 
 
-key = os.environ["FIRMS2_MAP_KEY"]
+key = os.environ["FIRMS_MAP_KEY"]
 
 
 def read_viirs_historical() -> pd.DataFrame:
