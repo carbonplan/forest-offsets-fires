@@ -14,7 +14,6 @@ dependencies:
   - git
   - jupyterhub-singleuser>=3.0,<4.0
   - mbutil
-  - ndpyramid
   - nodejs
   - numpy
   - pandas
@@ -39,3 +38,4 @@ dependencies:
       - carbonplan-data
       - censusgeocode
       - skyplane[aws]
+      - git+https://github.com/carbonplan/ndpyramid.git

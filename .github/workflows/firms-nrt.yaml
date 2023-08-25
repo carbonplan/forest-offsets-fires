@@ -1,7 +1,7 @@
 name: FIRMS NRT
 
 on:
-  # pull_request:
+  pull_request:
 
   push:
     branches:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+      FIRMS_MAP_KEY: ${{ secrets.FIRMS2_MAP_KEY }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: us-west-2
@@ -29,19 +29,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: install
+
+      - name: Install
         run: |
+          git config --global --add safe.directory /__w/forest-offsets-fires/forest-offsets-fires
           python -m pip install --no-deps .
-          python -m pip install skyplane[aws]
+          python -m pip list
 
-      - name: run-script
+      - name: Generate vector tiles
         run: |
-          python scripts/firms_nrt_raster_ETL.py
-
-      - name: Initialize Skyplane
-        run: |
-          skyplane init -y --disable-config-azure --disable-config-gcp
-
-      - name: Skyplane Copy
-        run: |
-          skyplane cp -r -y s3://carbonplan-forest-offsets/fires/firms_nrt/pyramid/staging/ s3://carbonplan-forest-offsets/web/tiles/current-firms-hotspots/
+          python scripts/generate_firms_tiles.py
