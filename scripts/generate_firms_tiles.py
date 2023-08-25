@@ -5,6 +5,7 @@ from carbonplan_forest_offsets_fires.firms import (
     write_firms_json,
     build_tippecanoe_cmd,
     build_pbf_cmd,
+    upload_tiles,
 )
 import subprocess
 
@@ -31,3 +32,4 @@ print(tippecanoe_cmd)
 subprocess.run(tippecanoe_cmd)
 pbf_cmd = build_pbf_cmd(tempdir=tempdir, stem=STEM)
 subprocess.run(pbf_cmd)
+upload_tiles(tempdir=tempdir, stem=STEM, dst_bucket=UPLOAD_TO)

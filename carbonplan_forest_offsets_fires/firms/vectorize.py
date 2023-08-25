@@ -13,7 +13,7 @@ def get_firms_json(firms_data: gpd.GeoDataFrame) -> str:
 def write_firms_json(*, data: gpd.GeoDataFrame, tempdir: str) -> str:
     """Write firms data as a GeoJson in a tempdir"""
     data = get_firms_json(data)
-    out_fn = Path(tempdir) / 'fires.json'
+    out_fn = Path(tempdir) / 'firms.json'
     with open(out_fn, 'w') as f:
         f.write(data)
     return out_fn
@@ -32,19 +32,20 @@ def build_tippecanoe_cmd(
     input_fn: str,
     tempdir: str,
     stem: str = "current-firms-pixels",
-    compression_factor: str = 'z9',
+    max_zoom_level: str = 'z9',
 ) -> str:
     """Create tippecanoe command for generating vector tiles"""
     return [
         "tippecanoe",
-        f"-{compression_factor}",
+        f"-{max_zoom_level}",
+        "-r1",
         "-o",
         f"{tempdir}/tmp/{stem}.mbtiles",
         "--no-feature-limit",
         "--no-tile-size-limit",
         "--extend-zooms-if-still-dropping",
         "--no-tile-compression",
-        f"{input_fn}",
+        "" f"{input_fn}",
     ]
 
 
