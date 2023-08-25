@@ -32,12 +32,12 @@ def build_tippecanoe_cmd(
     input_fn: str,
     tempdir: str,
     stem: str = "current-firms-pixels",
-    max_zoom_level: str = 'z9',
+    max_zoom_level: int = 9,
 ) -> str:
     """Create tippecanoe command for generating vector tiles"""
     return [
         "tippecanoe",
-        f"-{max_zoom_level}",
+        f"-z{max_zoom_level}",
         "-r1",
         "-o",
         f"{tempdir}/tmp/{stem}.mbtiles",
