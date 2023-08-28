@@ -6,10 +6,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'scripts/firms_nrt_raster_ETL.py'
-  # schedule:
-  #   - cron: '0 */6 * * *' # every 6th hour
+  schedule:
+    - cron: '0 */6 * * *' # every 6th hour
   workflow_dispatch:
 
 jobs:
