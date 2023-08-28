@@ -4,6 +4,7 @@ channels:
   - nodefaults
 dependencies:
   - python=3.10
+  - aiohttp
   - awscli
   - beautifulsoup4
   - click
@@ -32,6 +33,7 @@ dependencies:
   - xesmf
   - zarr
   - rioxarray
+  - requests
   - pip:
       - carbonplan-forest-offsets
       - carbonplan-styles

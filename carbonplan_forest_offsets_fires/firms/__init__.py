@@ -1,4 +1,4 @@
-from .io import read_viirs_nrt, read_viirs_historical, filter_df  # noqa
+from .io import read_firms_nrt, read_viirs_historical, filter_df, mask_df  # noqa
 from .vectorize import (  # noqa
     get_firms_json,
     write_firms_json,
