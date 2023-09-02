@@ -33,6 +33,8 @@ df_modis = read_firms_nrt(
 ).pipe(filter_df)
 df = pd.concat([df_snpp, df_noaa20, df_modis])
 gdf = mask_df(df)
+print("Writing geoparquet")
+gdf.to_parquet('s3://carbonplan-forest-offsets/fires/firms/current-firms-pixels.parquet')
 print("Creating temporary json")
 tempdir = make_tile_tempdir()
 json_fp = write_firms_json(data=gdf, tempdir=tempdir)
