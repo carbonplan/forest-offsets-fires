@@ -2,7 +2,6 @@ import geopandas as gpd
 from pathlib import Path
 import tempfile
 import os
-import fsspec
 
 
 def get_firms_json(firms_data: gpd.GeoDataFrame) -> str:
@@ -57,16 +56,3 @@ def build_pbf_cmd(tempdir: str, stem: str = "current-firms-pixels") -> str:
         f"{tempdir}/tmp/{stem}.mbtiles",
         f"{tempdir}/processed/{stem}",
     ]
-
-
-def upload_tiles(
-    *,
-    tempdir: str,
-    stem: str = "current-firms-pixels",
-    dst_bucket: str = "carbonplan-scratch/web/tiles",
-):
-    """Upload pdf tiles to s3"""
-    fs = fsspec.filesystem('s3', anon=False)
-    lpath = f'{tempdir}/processed/{stem}/'
-    rpath = f'{dst_bucket}/{stem}'
-    fs.put(lpath, rpath, recursive=True)

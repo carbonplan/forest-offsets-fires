@@ -72,3 +72,20 @@ def mask_df(df: pd.DataFrame) -> gpd.GeoDataFrame:
     masked_points = masked_points[['frp', 'geometry']]
 
     return masked_points
+
+
+def upload_tiles(
+    *,
+    tempdir: str,
+    stem: str = "current-firms-pixels",
+    dst_bucket: str = "carbonplan-scratch/web/tiles",
+):
+    """Upload pdf tiles to s3"""
+    fs = fsspec.filesystem('s3', anon=False)
+    lpath = f'{tempdir}/processed/{stem}/'
+    rpath = f'{dst_bucket}/{stem}/'
+    if rpath == 'carbonplan-forest-offsets/web/tiles/current-firms-pixels/':
+        fs.rm(rpath, recursive=True)
+        fs.put(lpath, rpath, recursive=True)
+    else:
+        raise ValueError(f"Unexpected target path {rpath}")
