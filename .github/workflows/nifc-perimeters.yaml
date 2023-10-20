@@ -19,7 +19,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: us-west-2
 
-    timeout-minutes: 20
+    timeout-minutes: 30
     container:
       image: quay.io/carbonplan/forest-offsets-fires:2264aafeb1bf
       options: --user root
