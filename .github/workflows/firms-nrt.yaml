@@ -11,6 +11,10 @@ on:
     - cron: '0 */6 * * *' # every 6th hour
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   flows:
     runs-on: ubuntu-latest
