@@ -1,9 +1,9 @@
 name: Build and push container image
 
 on:
-  # pull_request:
-  #   paths:
-  #     - 'binder/**.yml'
+  pull_request:
+    paths:
+      - 'binder/**.yml'
   push:
     branches:
       - main
