@@ -1,7 +1,8 @@
-import geopandas as gpd
-from pathlib import Path
-import tempfile
 import os
+import tempfile
+from pathlib import Path
+
+import geopandas as gpd
 
 
 def get_firms_json(firms_data: gpd.GeoDataFrame) -> str:

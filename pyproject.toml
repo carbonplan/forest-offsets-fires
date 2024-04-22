@@ -1,27 +1,110 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm[toml]>=6.2", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "carbonplan-forest-offsets-fires"
+description = "Preprocessing utilities for fire and offset project monitoring"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "CarbonPlan", email = "tech@carbonplan.org" }]
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+keywords = ["carbon", "data", "climate", "forests", "fire"]
+dynamic = ["version"]
+
+dependencies = [
+    "carbonplan-forest-offsets",
+    "geopandas",
+    "numpy",
+    "pandas",
+    "censusgeocode",
+    "pyarrow",
+    "thefuzz",
+    "prefect<2.0"
+]
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov", "pre-commit"]
+
+[project.urls]
+repository = "https://github.com/carbonplan/forest-offsets-fires"
+
+[tool.setuptools.packages.find]
+include = ["carbonplan_forest_offsets_fires*"]
+
+[tool.setuptools_scm]
+local_scheme = "node-and-date"
+fallback_version = "999"
+
+
 [tool.black]
 line-length = 100
-target-version = ['py38']
+target-version = ['py39']
 skip-string-normalization = true
 
 
-[build-system]
-requires = ["setuptools>=30.3.0", "wheel", "setuptools_scm"]
-
 [tool.ruff]
-target-version = "py38"
-exclude = [
-    "docs",
-]
-ignore = [
-]
 line-length = 100
-select = [ "B", "C", "E", "F", "W", "B9"]
+target-version = "py39"
+builtins = ["ellipsis"]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+per-file-ignores = {}
+# E402: module level import not at top of file
+# E501: line too long - let black worry about that
+# E731: do not assign a lambda expression, use a def
+ignore = ["E402", "E501", "E731"]
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I",
+    # Pyupgrade
+    "UP",
+]
+
 
 [tool.ruff.mccabe]
-# Flag errors (`C901`) whenever the complexity level exceeds 18.
 max-complexity = 18
 
 [tool.ruff.isort]
-combine-as-imports = true
-known-first-party = ["carbonplan"]
-known-third-party = ["intake", "setuptools"]
+known-first-party = ["carbonplan_forest_offsets_fires"]
+
+[tool.pytest.ini_options]
+console_output_style = "count"
+addopts = "--cov=./ --cov-report=xml --verbose"

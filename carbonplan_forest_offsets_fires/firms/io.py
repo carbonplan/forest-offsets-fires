@@ -1,7 +1,8 @@
 import os
-import pandas as pd
-import geopandas as gpd
+
 import fsspec
+import geopandas as gpd
+import pandas as pd
 
 key = os.environ["FIRMS_MAP_KEY"]
 url = "https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_countries.zip"
