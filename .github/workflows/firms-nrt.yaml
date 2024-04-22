@@ -27,7 +27,7 @@ jobs:
 
     timeout-minutes: 240
     container:
-      image: quay.io/carbonplan/forest-offsets-fires:latest
+      image: quay.io/carbonplan/forest-offsets-fires:9ed9a6ab3f65
       options: --user root
 
     steps:
