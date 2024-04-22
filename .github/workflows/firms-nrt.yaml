@@ -1,4 +1,4 @@
-name: FIRMS NRT
+name: firms-nrt
 
 on:
   pull_request:
@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-firms-vector-tiles:
+  build-firms-tiles:
     runs-on: ubuntu-latest
 
     env:

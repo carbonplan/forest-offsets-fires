@@ -1,4 +1,4 @@
-name: fires
+name: nifc-perimeters
 
 on:
   pull_request:
@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  flows:
+  build-nifc-tiles:
     runs-on: ubuntu-latest
 
     env:
