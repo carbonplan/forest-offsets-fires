@@ -1,4 +1,4 @@
-name: FIRMS NRT
+name: firms-nrt
 
 on:
   pull_request:
@@ -11,8 +11,12 @@ on:
     - cron: '0 */6 * * *' # every 6th hour
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  flows:
+  build-firms-tiles:
     runs-on: ubuntu-latest
 
     env:
@@ -31,8 +35,7 @@ jobs:
 
       - name: Install
         run: |
-          git config --global --add safe.directory /__w/forest-offsets-fires/forest-offsets-fires
-          python -m pip install --no-deps .
+          python -m pip install .
           python -m pip list
 
       - name: Generate vector tiles
