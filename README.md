@@ -7,7 +7,6 @@
 </a>
 </p>
 
-
 # forest-offsets-fires
 
 **monitoring tool for tracking wildfires burning within forest carbon offsets projects enrolled under California’s cap-and-trade program**

@@ -1,11 +1,12 @@
 import os
+
+import numpy as np
 import pandas as pd
-import xarray as xr  # noqa
 import pygmt
 import rioxarray  # noqa
-import numpy as np
-from ndpyramid import pyramid_reproject
+import xarray as xr  # noqa
 from carbonplan_data.utils import set_zarr_encoding as set_web_zarr_encoding
+from ndpyramid import pyramid_reproject
 
 key = os.environ["FIRMS_MAP_KEY"]
 pixels_per_tile = 256
