@@ -6,4 +6,3 @@ from .vectorize import (  # noqa
     build_pbf_cmd,
     build_tippecanoe_cmd,
 )
-from .rasterize import rasterize_frp, create_pyramids  # noqa
