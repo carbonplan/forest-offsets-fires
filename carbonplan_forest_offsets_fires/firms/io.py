@@ -5,7 +5,7 @@ import geopandas as gpd
 import pandas as pd
 
 key = os.environ["FIRMS_MAP_KEY"]
-url = "https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_countries.zip"
+url = "https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip"
 
 
 def read_viirs_historical() -> pd.DataFrame:
@@ -65,8 +65,7 @@ def mask_df(df: pd.DataFrame) -> gpd.GeoDataFrame:
     gdf = gpd.GeoDataFrame(
         df, geometry=gpd.points_from_xy(df.longitude, df.latitude), crs="EPSG:4326"
     )
-    with fsspec.open(f"simplecache::{url}") as file:
-        world = gpd.read_file(file)
+    world = gpd.read_file(url)
     us = world[world.SOVEREIGNT == "United States of America"]
 
     masked_points = gdf.sjoin(us, how='inner')
