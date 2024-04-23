@@ -93,11 +93,11 @@ def build_pbf_cmd(tempdir: str, stem: str) -> str:
 
 
 @prefect.task
-def upload_tiles(tempdir: str, stem: str, dst_bucket: str):
+def upload_tiles(tempdir: str, stem: str, dst_bucket: str, clear_existing: bool = False):
     fs = fsspec.filesystem('s3', anon=False)
     lpath = f'{tempdir}/processed/{stem}/'
     rpath = f'{dst_bucket}/{stem}'
-    if rpath == 'carbonplan-forest-offsets/web/tiles/current-nifc-perimeters':
+    if rpath == 'carbonplan-forest-offsets/web/tiles/current-nifc-perimeters' and clear_existing:
         print(f'Removing old tiles and uploading to {rpath}')
         fs.rm(rpath, recursive=True)
         fs.put(lpath, rpath, recursive=True)
