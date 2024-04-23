@@ -1,9 +1,9 @@
 name: firms-nrt
 
 on:
-  # pull_request:
-  #   branches:
-  #     - main
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -27,7 +27,7 @@ jobs:
 
     timeout-minutes: 240
     container:
-      image: quay.io/carbonplan/forest-offsets-fires:9ed9a6ab3f65
+      image: quay.io/carbonplan/forest-offsets-fires:latest
       options: --user root
 
     steps:
