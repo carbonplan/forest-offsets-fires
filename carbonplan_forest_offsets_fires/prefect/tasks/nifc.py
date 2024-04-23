@@ -97,4 +97,8 @@ def upload_tiles(tempdir: str, stem: str, dst_bucket: str):
     fs = fsspec.filesystem('s3', anon=False)
     lpath = f'{tempdir}/processed/{stem}/'
     rpath = f'{dst_bucket}/{stem}'
-    fs.put(lpath, rpath, recursive=True)
+    if rpath == 'carbonplan-forest-offsets/web/tiles/current-nifc-perimeters/':
+        fs.rm(rpath, recursive=True)
+        fs.put(lpath, rpath, recursive=True)
+    else:
+        raise ValueError(f"Unexpected target path {rpath}")
