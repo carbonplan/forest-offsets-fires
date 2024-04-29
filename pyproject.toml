@@ -33,7 +33,7 @@ dependencies = [
     "censusgeocode",
     "pyarrow",
     "thefuzz",
-    "prefect<2.0"
+    "prefect<3.0"
 ]
 [project.optional-dependencies]
 dev = ["pytest", "pytest-cov", "pre-commit"]
