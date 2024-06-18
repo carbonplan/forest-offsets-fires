@@ -136,6 +136,7 @@ with Flow('project-stats') as flow:
     filtered_projects = filter_project_results(project_fires)
     appended = append_inciweb_urls.map(filtered_projects)
     write_state_as_of(as_of, appended)
+    write_state_as_of(None, appended)
 
 flow.run_config = prefect.run_configs.KubernetesRun(
     image='carbonplan/fire-monitor-prefect:2022.06.06'
