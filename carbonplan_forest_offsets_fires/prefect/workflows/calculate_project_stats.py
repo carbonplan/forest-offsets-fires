@@ -77,12 +77,15 @@ def summarize_project_fires(
         burned_area = proj_geom.intersection(fire_geom).area.sum()
         burned_frac = burned_area / proj_geom.area.sum()
         fires_summary = get_fire_metadata(project_fires)
-        return {
-            'opr_id': opr_id,
-            'burned_area': burned_area,
-            'burned_fraction': round(burned_frac, 3),
-            'fires': fires_summary,
-        }
+        if burned_area > 4046.86*10: # ten acre minimum
+            return {
+                'opr_id': opr_id,
+                'burned_area': burned_area,
+                'burned_fraction': round(burned_frac, 3),
+                'fires': fires_summary,
+            }
+        else:
+            return None
 
 
 @prefect.task
