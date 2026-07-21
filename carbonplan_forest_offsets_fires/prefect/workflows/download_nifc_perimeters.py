@@ -20,7 +20,7 @@ NIFC_ENDPOINT = (
 
 
 def get_fire_url(url):
-    fires = geopandas.read_file(url).to_crs(CRS).reset_index(drop=True)
+    fires = geopandas.read_file(f'GeoJSON:{url}').to_crs(CRS).reset_index(drop=True)
     return fires
 
 
