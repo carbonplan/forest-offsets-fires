@@ -9,7 +9,7 @@ dependencies:
   - beautifulsoup4
   - click
   - dask
-  - fiona==1.9.4
+  - fiona
   - fsspec
   - geopandas
   - git
@@ -29,7 +29,7 @@ dependencies:
   - thefuzz
   - tippecanoe
   - tqdm
-  - xarray==2023.01.0
+  - xarray
   - xesmf
   - zarr
   - rioxarray
@@ -39,5 +39,4 @@ dependencies:
       - carbonplan-styles
       - carbonplan-data
       - censusgeocode
-      - skyplane[aws]
       - git+https://github.com/carbonplan/ndpyramid.git
