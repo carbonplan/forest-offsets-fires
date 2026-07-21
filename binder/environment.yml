@@ -13,7 +13,6 @@ dependencies:
   - fsspec
   - geopandas
   - git
-  - jupyterhub-singleuser>=3.0,<4.0
   - mbutil
   - nodejs
   - numpy
